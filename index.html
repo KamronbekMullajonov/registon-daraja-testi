@@ -4,160 +4,221 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daraja testi — Registon o‘quv markazi</title>
-<meta name="description" content="Ingliz tili (CEFR) va matematika bo‘yicha bepul daraja testi. Darajangizni aniqlang va sizga mos guruhni biling.">
+<meta name="description" content="Ingliz tili, rus tili (CEFR) va matematika bo‘yicha bepul daraja testi. Бесплатный тест уровня по английскому, русскому языку и математике.">
 <meta name="theme-color" content="#E75225">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 74 52'%3E%3Cpath fill='%23e75225' d='M0 35.8h67.4V52H0z'/%3E%3Cpath fill='%23e75225' d='M72.6.2c-3 1.7-7 3.3-15 3.5-6 .2-14 .5-19.4 6.3-3 3.4-4.3 10-4.6 16.1C32 16 26 5.6 13.5 5.9 6 6.2 2 9.5 0 13.4v12.8c4-2.5 10-3.7 16.3-3.6 8.5.2 15 2.8 17.3 8.8 3-7 9-9.5 23-10.2 11.5-.7 16.4-6.5 16.4-18.6V0z'/%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   /* ===== Registon brend ranglari ===== */
   :root{
-    --orange:#E75225; --orange-400:#EC703E; --orange-100:#F8C1A4; --orange-50:#FCDECC; --orange-700:#B83A0E;
+    --orange:#E75225; --orange-400:#EC703E; --orange-100:#F8C1A4; --orange-50:#FCDECC; --orange-25:#FEF2EB; --orange-700:#B83A0E;
     --black:#1D1D1B; --graphite:#333333; --white:#FFFFFF;
     --gray-600:#5C5C58; --gray-300:#B5B5B0; --gray-200:#E3E2DF; --gray-100:#F6F5F3;
     --ok:#1F8A4C; --sans:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;
+    --ease:cubic-bezier(.2,.8,.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{font-family:var(--sans);background:var(--white);color:var(--black);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--sans);background:var(--white);color:var(--black);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   button{font-family:inherit;color:inherit}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
   .narrow{max-width:760px}
+  :focus-visible{outline:3px solid var(--orange-100);outline-offset:2px}
 
-  header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--gray-200)}
-  header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{background:none;border:0;cursor:pointer;display:flex;align-items:center}
-  .brand svg{height:34px;width:auto}
-  .crumb{font-size:14px;color:var(--gray-600);font-weight:500}
+  /* ---------- HEADER ---------- */
+  header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+  header.scrolled{border-color:var(--gray-200);box-shadow:0 8px 24px -20px rgba(29,29,27,.35)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+  .brand{background:none;border:0;cursor:pointer;display:flex;align-items:center;padding:6px 4px;border-radius:6px}
+  .brand svg{height:36px;width:auto;overflow:visible}
+  .brand .mk-top,.brand .mk-bar{transform-box:fill-box;transition:transform .5s var(--ease)}
+  .brand .mk-top{transform-origin:0% 100%}
+  .brand .mk-bar{transform-origin:0% 50%}
+  .brand .word{transition:opacity .3s}
+  .brand:hover .mk-top{transform:translateY(-3px) rotate(-4deg)}
+  .brand:hover .mk-bar{transform:scaleX(1.08)}
+  .brand.intro .mk-top{animation:mkTop .9s var(--ease) both}
+  .brand.intro .mk-bar{animation:mkBar .7s var(--ease) both}
+  .brand.intro .word{animation:word .6s .35s var(--ease) both}
+  @keyframes mkTop{from{transform:translateY(-14px) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+  @keyframes mkBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes word{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+  .hright{display:flex;align-items:center;gap:18px}
+  .crumb{font-size:14px;color:var(--gray-600);font-weight:600}
+  /* til almashtirgich */
+  .lang{position:relative;display:flex;background:var(--gray-100);border-radius:999px;padding:4px;border:1px solid var(--gray-200)}
+  .lang button{position:relative;z-index:1;border:0;background:none;font-size:13px;font-weight:800;letter-spacing:.04em;padding:7px 13px;border-radius:999px;cursor:pointer;color:var(--gray-600);transition:color .25s}
+  .lang button.on{color:var(--white)}
+  .lang .thumb{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--orange);transition:transform .35s var(--ease),width .35s var(--ease);box-shadow:0 4px 10px -4px rgba(231,82,37,.7)}
 
   .screen{display:none}
-  .screen.active{display:block;animation:in .4s ease}
-  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .screen.active{display:block;animation:in .45s var(--ease)}
+  @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--orange);color:var(--white);border:0;border-radius:4px;padding:16px 26px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .15s,transform .15s}
-  .btn:hover{background:var(--orange-400)}
-  .btn:active{transform:translateY(1px)}
-  .btn:disabled{opacity:.45;cursor:not-allowed}
-  .btn.dark{background:var(--black)} .btn.dark:hover{background:var(--graphite)}
-  .btn.ghost{background:var(--white);color:var(--black);border:1.5px solid var(--gray-200)}
+  /* ---------- TUGMALAR ---------- */
+  .btn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--orange);color:var(--white);border:0;border-radius:10px;padding:16px 26px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s var(--ease),box-shadow .25s;box-shadow:0 10px 22px -12px rgba(231,82,37,.75)}
+  .btn::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s var(--ease)}
+  .btn:hover::before{transform:translateX(120%)}
+  .btn:hover{background:var(--orange-400);transform:translateY(-2px);box-shadow:0 16px 28px -14px rgba(231,82,37,.85)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn .ar{display:inline-block;transition:transform .3s var(--ease)}
+  .btn:hover .ar{transform:translateX(4px)}
+  .btn:hover .ar.down{transform:translateY(3px)}
+  .btn.dark{background:var(--black);box-shadow:0 10px 22px -14px rgba(29,29,27,.8)} .btn.dark:hover{background:var(--graphite)}
+  .btn.ghost{background:var(--white);color:var(--black);border:1.5px solid var(--gray-200);box-shadow:none}
   .btn.ghost:hover{border-color:var(--black)}
   .btn.block{width:100%}
+  .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.45);transform:scale(0);animation:rip .6s ease-out forwards;pointer-events:none;z-index:-1}
+  .ghost .ripple,.opt .ripple,.subj .ripple{background:rgba(231,82,37,.18)}
+  @keyframes rip{to{transform:scale(1);opacity:0}}
 
-  /* HERO */
-  .hero{padding:64px 0 56px;position:relative;overflow:hidden}
-  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  /* ---------- HERO ---------- */
+  .hero{padding:64px 0 60px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;right:-180px;top:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(231,82,37,.13),transparent 65%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;position:relative}
   .kicker{font-size:14px;font-weight:700;color:var(--orange-700);letter-spacing:.04em;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-  .kicker i{width:28px;height:3px;background:var(--orange);display:block}
+  .kicker i{width:28px;height:3px;background:var(--orange);display:block;border-radius:2px}
   .hero h1{font-size:clamp(38px,5.6vw,60px);line-height:1.04;letter-spacing:-.025em;font-weight:800;margin-bottom:20px}
-  .hero h1 span{color:var(--orange)}
-  .hero p{color:var(--gray-600);font-size:18px;max-width:520px;margin-bottom:28px}
-  .facts{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
-  .facts div b{display:block;font-size:28px;font-weight:800;letter-spacing:-.02em}
+  .hero h1 span{color:var(--orange);position:relative;white-space:nowrap}
+  .hero h1 span::after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:.12em;background:var(--orange-50);z-index:-1;transform:scaleX(0);transform-origin:left;animation:under .8s .5s var(--ease) forwards;border-radius:4px}
+  @keyframes under{to{transform:scaleX(1)}}
+  .hero p.lead-p{color:var(--gray-600);font-size:18px;max-width:520px;margin-bottom:28px}
+  .facts{display:flex;gap:30px;margin-top:36px;flex-wrap:wrap}
+  .facts div b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .facts div span{font-size:14px;color:var(--gray-600)}
-  /* interaktiv daraja zinapoyasi */
-  .ladder{display:flex;align-items:flex-end;gap:10px;height:300px;padding:0 6px;border-bottom:3px solid var(--black)}
-  .ladder .st{flex:1;background:var(--gray-100);border-radius:3px 3px 0 0;position:relative;cursor:pointer;transition:background .25s,transform .25s}
-  .ladder .st:hover,.ladder .st.on{background:var(--orange)}
-  .ladder .st:hover b,.ladder .st.on b{color:var(--white)}
+  /* zinapoya */
+  .ltabs{display:inline-flex;gap:4px;background:var(--gray-100);padding:4px;border-radius:10px;margin-bottom:22px}
+  .ltabs button{border:0;background:none;padding:8px 14px;border-radius:7px;font-size:14px;font-weight:700;color:var(--gray-600);cursor:pointer;transition:background .2s,color .2s}
+  .ltabs button.on{background:var(--white);color:var(--black);box-shadow:0 2px 8px -4px rgba(0,0,0,.25)}
+  .ladder{display:flex;align-items:flex-end;gap:10px;height:290px;padding:0 6px;border-bottom:3px solid var(--black)}
+  .ladder .st{flex:1;background:var(--gray-100);border-radius:8px 8px 0 0;position:relative;cursor:pointer;transition:background .3s,transform .3s var(--ease);transform-origin:bottom;animation:grow .7s var(--ease) both}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  .ladder .st:hover{transform:translateY(-6px)}
+  .ladder .st.on{background:var(--orange);box-shadow:0 14px 26px -16px rgba(231,82,37,.9)}
+  .ladder .st.on b{color:var(--white)}
   .ladder .st b{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:18px;font-weight:800;color:var(--black);transition:color .25s}
-  .ladder .st small{position:absolute;bottom:-26px;left:-14px;right:-14px;text-align:center;font-size:10.5px;color:var(--gray-600);white-space:nowrap}
-  .ladder-info{margin-top:42px;min-height:48px;font-size:15px;color:var(--gray-600)}
+  .ladder .st small{position:absolute;bottom:-26px;left:-16px;right:-16px;text-align:center;font-size:10.5px;color:var(--gray-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ladder-info{margin-top:42px;min-height:52px;font-size:15px;color:var(--gray-600);transition:opacity .25s}
   .ladder-info b{color:var(--black)}
 
-  .sec{padding:64px 0}
+  .sec{padding:68px 0}
   .sec.gray{background:var(--gray-100)}
-  .sec h2{font-size:clamp(28px,4vw,36px);line-height:1.15;letter-spacing:-.02em;font-weight:800;margin-bottom:10px}
+  .sec h2{font-size:clamp(28px,4vw,38px);line-height:1.15;letter-spacing:-.02em;font-weight:800;margin-bottom:10px}
   .sec .sub{color:var(--gray-600);margin-bottom:32px;max-width:640px}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+  .reveal.seen{opacity:1;transform:none}
 
-  .subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-  .subj{background:var(--white);border:1.5px solid var(--gray-200);border-radius:4px;padding:30px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s}
-  .subj:hover{border-color:var(--black);transform:translateY(-4px);box-shadow:0 18px 36px -24px rgba(29,29,27,.45)}
-  .subj .ic{width:56px;height:56px;background:var(--orange-50);border-radius:4px;display:grid;place-items:center;font-size:24px;font-weight:800;color:var(--orange-700);transition:background .2s,color .2s}
-  .subj:hover .ic{background:var(--orange);color:var(--white)}
+  /* fan kartalari */
+  .subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1000px}
+  .subj{--mx:50%;--my:50%;background:var(--white);border:1.5px solid var(--gray-200);border-radius:16px;padding:30px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .3s,transform .25s var(--ease);transform-style:preserve-3d}
+  .subj::after{content:"";position:absolute;inset:0;background:radial-gradient(360px circle at var(--mx) var(--my),rgba(231,82,37,.10),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+  .subj:hover{border-color:var(--orange);box-shadow:0 26px 44px -28px rgba(29,29,27,.5)}
+  .subj:hover::after{opacity:1}
+  .subj .ic{width:60px;height:60px;background:var(--orange-50);border-radius:14px;display:grid;place-items:center;font-size:24px;font-weight:800;color:var(--orange-700);transition:background .3s,color .3s,transform .4s var(--ease)}
+  .subj:hover .ic{background:var(--orange);color:var(--white);transform:rotate(-8deg) scale(1.06)}
   .subj h3{font-size:26px;letter-spacing:-.02em;font-weight:800}
   .subj p{color:var(--gray-600);font-size:15.5px}
   .subj .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .chip{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:3px;background:var(--gray-100);color:var(--graphite)}
-  .subj .meta{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid var(--gray-200);font-size:14px;font-weight:600}
-  .subj .meta .go{color:var(--orange-700);display:flex;align-items:center;gap:6px;transition:gap .2s}
-  .subj:hover .meta .go{gap:12px}
-  .subj .done{position:absolute;top:22px;right:22px;font-size:12px;font-weight:700;background:var(--black);color:var(--white);padding:4px 9px;border-radius:3px;display:none}
+  .chip{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--gray-100);color:var(--graphite)}
+  .subj .meta{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid var(--gray-200);font-size:14px;font-weight:600;gap:10px}
+  .subj .meta .go{color:var(--white);background:var(--orange);padding:8px 14px;border-radius:999px;display:flex;align-items:center;gap:6px;transition:gap .25s,background .25s}
+  .subj:hover .meta .go{gap:12px;background:var(--orange-700)}
+  .subj .done{position:absolute;top:22px;right:22px;font-size:12px;font-weight:700;background:var(--black);color:var(--white);padding:4px 10px;border-radius:999px;display:none}
   .subj.is-done .done{display:block}
-  .soon{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;font-size:14px;color:var(--gray-600);align-items:center}
+  .soon{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;font-size:14px;color:var(--gray-600);align-items:center}
   .soon .chip{background:var(--white);border:1px dashed var(--gray-300)}
 
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  .step{border-top:3px solid var(--black);padding-top:16px}
+  .step{border-top:3px solid var(--gray-200);padding-top:16px;position:relative}
+  .step::before{content:"";position:absolute;top:-3px;left:0;height:3px;width:0;background:var(--orange);transition:width .9s var(--ease)}
+  .step.seen::before{width:100%}
   .step .n{font-size:14px;font-weight:800;color:var(--orange-700);margin-bottom:6px}
   .step h3{font-size:18px;font-weight:700;margin-bottom:6px}
   .step p{font-size:15px;color:var(--gray-600)}
-  .honest{margin-top:34px;background:var(--orange-50);border-left:4px solid var(--orange);padding:20px 22px;border-radius:0 4px 4px 0;font-size:15.5px}
+  .honest{margin-top:34px;background:var(--orange-25);border-left:4px solid var(--orange);padding:20px 22px;border-radius:0 12px 12px 0;font-size:15.5px}
   .honest b{display:block;margin-bottom:4px}
 
-  /* TEST */
-  .quiz{padding-top:36px;padding-bottom:72px}
+  /* ---------- TEST ---------- */
+  .quiz{padding-top:34px;padding-bottom:72px}
   .qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-  .back{background:none;border:0;font-size:14px;font-weight:600;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;gap:6px}
-  .back:hover{color:var(--black)}
-  .qinfo{display:flex;gap:14px;align-items:center;font-size:14px;font-weight:600;color:var(--gray-600)}
+  .back{background:none;border:0;font-size:14px;font-weight:600;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;transition:background .2s,color .2s}
+  .back:hover{color:var(--black);background:var(--gray-100)}
+  .qinfo{display:flex;gap:12px;align-items:center;font-size:14px;font-weight:700;color:var(--gray-600)}
   .qinfo .subjname{color:var(--orange-700)}
-  .timer{font-variant-numeric:tabular-nums}
-  .bar{height:6px;background:var(--gray-100);border-radius:3px;overflow:hidden;margin-bottom:30px}
-  .bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .35s}
-  .qcount{font-size:13px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;gap:10px;align-items:center}
-  .qcount .tag{background:var(--gray-100);padding:3px 8px;border-radius:3px;color:var(--graphite);letter-spacing:0}
-  .passage{background:var(--gray-100);border-left:3px solid var(--black);padding:18px 20px;border-radius:0 4px 4px 0;font-size:16px;line-height:1.6;margin-bottom:20px}
+  .timer{font-variant-numeric:tabular-nums;background:var(--gray-100);padding:5px 10px;border-radius:999px}
+  .segs{display:flex;gap:4px;margin-bottom:28px}
+  .segs i{flex:1;height:6px;border-radius:3px;background:var(--gray-200);transition:background .35s,transform .35s var(--ease)}
+  .segs i.done{background:var(--orange)}
+  .segs i.cur{background:var(--orange-100);transform:scaleY(1.5)}
+  .qcard{transition:opacity .22s,transform .22s var(--ease)}
+  .qcard.out{opacity:0;transform:translateX(-24px)}
+  .qcard.in{animation:qin .35s var(--ease)}
+  @keyframes qin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+  .qcount{font-size:13px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .qcount .tag{background:var(--orange-25);color:var(--orange-700);padding:4px 10px;border-radius:999px;letter-spacing:0;text-transform:none}
+  .passage{background:var(--gray-100);border-left:3px solid var(--orange);padding:18px 20px;border-radius:0 12px 12px 0;font-size:16px;line-height:1.65;margin-bottom:20px}
   .qtext{font-size:clamp(22px,3.4vw,28px);line-height:1.3;font-weight:700;letter-spacing:-.015em;margin-bottom:24px}
-  .qtext .blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--orange);margin:0 4px;height:1em;vertical-align:-2px}
+  .qtext .blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--orange);margin:0 4px;height:1em;vertical-align:-2px;animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{50%{border-color:var(--orange-100)}}
   .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .opt{display:flex;align-items:center;gap:14px;text-align:left;background:var(--white);border:1.5px solid var(--gray-200);border-radius:4px;padding:16px 18px;font-size:17px;font-weight:500;cursor:pointer;transition:border-color .15s,background .15s;opacity:0;animation:opt .35s forwards}
-  @keyframes opt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .opt:hover{border-color:var(--black)}
-  .opt .k{flex:none;width:30px;height:30px;border-radius:3px;background:var(--gray-100);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--gray-600)}
-  .opt.sel{border-color:var(--orange);background:var(--orange-50)}
-  .opt.sel .k{background:var(--orange);color:var(--white)}
-  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px;flex-wrap:wrap}
-  .skip{background:none;border:0;font-size:15px;font-weight:600;color:var(--gray-600);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-  .skip:hover{color:var(--black)}
+  .opt{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:14px;text-align:left;background:var(--white);border:1.5px solid var(--gray-200);border-radius:12px;padding:16px 18px;font-size:17px;font-weight:500;cursor:pointer;transition:border-color .2s,background .2s,transform .2s var(--ease),box-shadow .2s;opacity:0;animation:opt .4s var(--ease) forwards}
+  @keyframes opt{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .opt:hover{border-color:var(--black);transform:translateY(-2px);box-shadow:0 10px 20px -16px rgba(29,29,27,.5)}
+  .opt .k{flex:none;width:32px;height:32px;border-radius:9px;background:var(--gray-100);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--gray-600);transition:background .2s,color .2s,transform .3s var(--ease)}
+  .opt:hover .k{background:var(--black);color:var(--white)}
+  .opt.sel{border-color:var(--orange);background:var(--orange-25);animation:pop .3s var(--ease)}
+  .opt.sel .k{background:var(--orange);color:var(--white);transform:scale(1.1)}
+  @keyframes pop{50%{transform:scale(1.03)}}
+  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:12px;flex-wrap:wrap}
+  .skip{background:none;border:1.5px dashed var(--gray-300);border-radius:999px;padding:9px 16px;font-size:14.5px;font-weight:700;color:var(--gray-600);cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+  .skip:hover{color:var(--black);border-color:var(--black);background:var(--gray-100)}
   .qhint{font-size:13px;color:var(--gray-600)}
-  .qhint kbd{font-family:inherit;font-weight:700;background:var(--gray-100);padding:1px 6px;border-radius:3px}
+  .qhint kbd{font-family:inherit;font-weight:700;background:var(--gray-100);padding:2px 7px;border-radius:5px;border:1px solid var(--gray-200)}
 
-  /* FORMA */
+  /* ---------- FORMA ---------- */
   .lead{padding-top:48px;padding-bottom:72px}
-  .card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:4px;padding:34px}
+  .card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:16px;padding:34px}
   .card h2{font-size:30px;letter-spacing:-.02em;font-weight:800;margin-bottom:8px}
   .card > p{color:var(--gray-600);margin-bottom:22px}
-  .ready{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ok);background:#E7F4EC;padding:5px 10px;border-radius:3px;margin-bottom:14px}
-  .blurlevel{display:flex;align-items:center;gap:16px;background:var(--gray-100);border-radius:4px;padding:16px 18px;margin-bottom:24px}
-  .blurlevel b{font-size:40px;font-weight:800;filter:blur(9px);user-select:none;color:var(--orange)}
+  .ready{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ok);background:#E7F4EC;padding:6px 12px;border-radius:999px;margin-bottom:14px}
+  .blurlevel{display:flex;align-items:center;gap:16px;background:var(--gray-100);border-radius:12px;padding:16px 18px;margin-bottom:24px}
+  .blurlevel b{font-size:40px;font-weight:800;filter:blur(9px);user-select:none;color:var(--orange);animation:shim 2s ease-in-out infinite}
+  @keyframes shim{50%{filter:blur(12px);opacity:.7}}
   .blurlevel span{font-size:14px;color:var(--gray-600)}
   .field{margin-bottom:16px}
   .field label{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
-  .field input,.field select{width:100%;border:1.5px solid var(--gray-200);border-radius:4px;padding:14px 16px;font:500 16px var(--sans);background:#fff;color:var(--black);outline:none;transition:border-color .15s}
-  .field input:focus,.field select:focus{border-color:var(--black)}
-  .phone{display:flex;border:1.5px solid var(--gray-200);border-radius:4px;overflow:hidden}
-  .phone:focus-within{border-color:var(--black)}
+  .field input,.field select{width:100%;border:1.5px solid var(--gray-200);border-radius:10px;padding:14px 16px;font:500 16px var(--sans);background:#fff;color:var(--black);outline:none;transition:border-color .2s,box-shadow .2s}
+  .field input:focus,.field select:focus{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-25)}
+  .phone{display:flex;border:1.5px solid var(--gray-200);border-radius:10px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  .phone:focus-within{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-25)}
   .phone span{padding:14px 12px 14px 16px;background:var(--gray-100);font-weight:700;color:var(--gray-600)}
-  .phone input{border:0;border-radius:0}
+  .phone input{border:0;border-radius:0;box-shadow:none!important}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .err{font-size:13.5px;color:#B3261E;margin-top:6px;display:none}
   .field.bad .err{display:block}
   .field.bad input,.field.bad .phone{border-color:#B3261E}
+  .field.bad{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
-  /* NATIJA */
+  /* ---------- NATIJA ---------- */
   .result{padding-top:36px;padding-bottom:80px}
-  .rtop{display:grid;grid-template-columns:auto 1fr;gap:0;background:var(--black);color:var(--white);border-radius:4px;overflow:hidden}
-  .rlevel{background:var(--orange);padding:34px 40px;display:flex;flex-direction:column;justify-content:center;min-width:220px}
+  .rtop{display:grid;grid-template-columns:auto 1fr;background:var(--black);color:var(--white);border-radius:18px;overflow:hidden;box-shadow:0 30px 50px -36px rgba(29,29,27,.8)}
+  .rlevel{background:var(--orange);padding:34px 40px;display:flex;flex-direction:column;justify-content:center;min-width:220px;position:relative;overflow:hidden}
+  .rlevel::after{content:"";position:absolute;right:-40px;bottom:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.12)}
   .rlevel small{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.9}
-  .rlevel b{font-size:clamp(56px,9vw,88px);line-height:1;font-weight:800;letter-spacing:-.03em}
+  .rlevel b{font-size:clamp(56px,9vw,88px);line-height:1;font-weight:800;letter-spacing:-.03em;display:inline-block}
+  .rlevel b.roll{animation:roll .7s var(--ease)}
+  @keyframes roll{0%{transform:translateY(40%) scale(.6);opacity:0}60%{transform:translateY(-6%) scale(1.06);opacity:1}100%{transform:none}}
   .rinfo{padding:30px 36px}
   .rinfo small{font-size:13px;color:#B5B5B0;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
   .rinfo h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;font-weight:800;margin:6px 0 10px}
   .rinfo p{color:#D9D8D4;font-size:16px}
-  .rinfo .ielts{display:inline-block;margin-top:14px;font-size:14px;font-weight:700;border:1px solid #4A4A47;padding:6px 10px;border-radius:3px}
+  .rinfo .ielts{display:inline-block;margin-top:14px;font-size:14px;font-weight:700;border:1px solid #4A4A47;padding:6px 12px;border-radius:999px}
   .rladder{display:flex;gap:6px;margin:22px 0 6px}
-  .rladder div{flex:1;text-align:center;padding:12px 4px;border-radius:3px;background:var(--gray-100);font-weight:800;font-size:15px;color:var(--gray-600);position:relative}
+  .rladder div{flex:1;text-align:center;padding:12px 4px;border-radius:10px;background:var(--gray-100);font-weight:800;font-size:15px;color:var(--gray-600);position:relative;opacity:0;animation:opt .4s var(--ease) forwards}
   .rladder div small{display:block;font-size:11px;font-weight:600;margin-top:2px}
-  .rladder div.on{background:var(--orange);color:var(--white)}
+  .rladder div.on{background:var(--orange);color:var(--white);box-shadow:0 12px 22px -14px rgba(231,82,37,.9)}
   .rladder div.below{background:var(--orange-50);color:var(--orange-700)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
   .card h3{font-size:19px;font-weight:800;margin-bottom:14px;letter-spacing:-.01em}
@@ -165,31 +226,35 @@
   .sk .row{display:flex;justify-content:space-between;font-size:15px;font-weight:600;margin-bottom:6px}
   .sk .row span:last-child{color:var(--gray-600)}
   .sk .tr{height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden}
-  .sk .tr i{display:block;height:100%;width:0;background:var(--black);border-radius:4px;transition:width .9s ease}
+  .sk .tr i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange-400),var(--orange));border-radius:4px;transition:width 1s var(--ease)}
   .cando{list-style:none;display:grid;gap:10px}
-  .cando li{padding-left:24px;position:relative;font-size:15.5px}
+  .cando li{padding-left:26px;position:relative;font-size:15.5px}
   .cando li::before{content:"";position:absolute;left:0;top:7px;width:12px;height:7px;border-left:2.5px solid var(--orange);border-bottom:2.5px solid var(--orange);transform:rotate(-45deg)}
-  .next{margin-top:16px;background:var(--orange-50);border-radius:4px;padding:26px 28px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+  .next{margin-top:16px;background:var(--orange-25);border:1.5px solid var(--orange-50);border-radius:16px;padding:26px 28px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
   .next h3{font-size:21px;font-weight:800;margin-bottom:6px}
   .next p{font-size:15.5px;color:var(--graphite)}
   .next .btns{display:flex;gap:10px;flex-wrap:wrap}
-  .disc{margin-top:16px;font-size:14px;color:var(--gray-600);background:var(--gray-100);padding:14px 16px;border-radius:4px}
+  .disc{margin-top:16px;font-size:14px;color:var(--gray-600);background:var(--gray-100);padding:14px 16px;border-radius:12px}
   .ract{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
   .more > h3{font-size:22px;font-weight:800;margin:44px 0 16px}
   .more .subjects{grid-template-columns:repeat(2,1fr)}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   footer{border-top:1px solid var(--gray-200);padding:26px 0}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;font-size:14px;color:var(--gray-600);flex-wrap:wrap}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--black);color:#fff;padding:12px 18px;border-radius:4px;font-size:14px;font-weight:600;transition:transform .35s;z-index:50}
-  .toast.on{transform:translateX(-50%) translateY(0)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--black);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;transition:transform .4s var(--ease),opacity .3s;z-index:70;opacity:0}
+  .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
 
   @media (max-width:900px){
     .hero .wrap{grid-template-columns:1fr}
     .ladder{height:200px}
     .steps{grid-template-columns:1fr 1fr}
+    .subjects{grid-template-columns:1fr 1fr}
   }
   @media (max-width:640px){
     body{font-size:16px}
+    header .wrap{height:62px}
+    .brand svg{height:30px}
     .hero{padding:36px 0 44px}
     .subjects,.more .subjects,.grid2,.row2,.opts{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr}
@@ -199,16 +264,25 @@
     .card{padding:24px}
     .next{grid-template-columns:1fr}
     .crumb{display:none}
+    .qhint{display:none}
+    .ladder{gap:6px}
+    .ladder .st small{left:-2px;right:-2px;font-size:8.5px;white-space:normal;line-height:1.15;bottom:-24px}
   }
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 
-<header>
+<header id="hdr">
   <div class="wrap">
-    <button class="brand" onclick="goHome()" aria-label="Bosh sahifa"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.15 52.01"><path fill="#e75225" d="M0.00 35.83h67.38v16.18h-67.38Z"></path><path fill="#e75225" d="M72.58 0.21C72.35 0.34 70.38 1.39 69.37 1.79C65.62 3.28 61.53 3.55 57.55 3.66C55.90 3.72 54.24 3.72 52.59 3.80C49.53 3.95 46.40 4.42 43.60 5.72C42.33 6.30 41.15 7.06 40.10 7.98C39.40 8.59 38.80 9.28 38.23 10.01C36.99 11.58 36.20 13.41 35.51 15.27C34.76 17.31 34.39 19.51 34.06 21.65C33.91 22.64 33.78 23.62 33.69 24.62C33.62 25.41 33.57 25.86 33.54 26.09C33.52 25.96 33.50 25.69 33.44 25.18C33.35 24.39 33.24 23.61 33.11 22.82C32.94 21.75 32.75 20.68 32.41 19.65C31.96 17.98 31.05 15.69 30.20 14.19C29.19 12.37 27.87 10.70 26.29 9.35C24.69 7.99 22.68 6.95 20.67 6.35C18.38 5.67 15.88 5.70 13.52 5.85C12.10 5.93 10.69 6.16 9.33 6.54C8.04 6.90 6.80 7.40 5.63 8.03C4.48 8.65 3.42 9.44 2.47 10.34C1.78 11.01 1.14 11.74 0.59 12.54L0.00 13.38L0.00 19.75C0.00 24.70 0.01 25.77 0.01 26.19C0.22 26.06 0.91 25.65 1.15 25.53C1.54 25.31 1.94 25.11 2.34 24.92C3.28 24.47 4.25 24.12 5.25 23.82C8.80 22.74 12.60 22.48 16.29 22.57C19.24 22.64 22.21 23.04 25.01 23.98C26.67 24.53 28.27 25.27 29.68 26.31C30.65 27.05 31.42 27.85 32.14 28.82C32.62 29.46 33.30 30.68 33.60 31.34C33.91 30.46 34.20 29.93 34.48 29.45C34.74 29.01 35.01 28.57 35.32 28.15C36.01 27.23 36.83 26.40 37.73 25.68C39.19 24.51 40.88 23.63 42.63 22.97C44.87 22.13 47.19 21.62 49.57 21.42C51.91 21.23 54.25 21.22 56.59 21.08C61.72 20.75 67.48 19.07 70.31 14.35C72.18 11.24 72.96 7.76 72.96 2.56C72.96 0.48 72.93 0.45 72.91 0.00C72.83 0.06 72.72 0.13 72.58 0.21"></path><path fill="#1d1d1b" d="M87.48 19.03L87.48 14.35L91.04 14.35C92.78 14.35 93.85 15.14 93.85 16.68C93.85 18.10 92.85 19.03 91.11 19.03L87.48 19.03M83.89 27.41L87.48 27.41L87.48 22.19L90.25 22.19L93.78 27.41L97.97 27.41L93.99 21.59C96.06 20.82 97.48 19.17 97.48 16.54C97.48 14.96 96.99 13.68 96.09 12.77C95.01 11.70 93.41 11.12 91.34 11.12L83.89 11.12L83.89 27.41"></path><path fill="#1d1d1b" d="M100.39 27.41L112.79 27.41L112.79 24.22L103.95 24.22L103.95 20.80L111.62 20.80L111.62 17.61L103.95 17.61L103.95 14.31L112.67 14.31L112.67 11.12L100.39 11.12L100.39 27.41"></path><path fill="#1d1d1b" d="M123.64 27.69C126.62 27.69 128.92 26.52 130.59 25.10L130.59 18.03L123.52 18.03L123.52 21.12L127.13 21.12L127.13 23.45C126.22 24.10 125.06 24.43 123.75 24.43C120.87 24.43 118.82 22.24 118.82 19.26C118.82 16.45 120.89 14.14 123.50 14.14C125.38 14.14 126.50 14.75 127.76 15.80L130.01 13.07C128.31 11.63 126.54 10.84 123.61 10.84C118.68 10.84 115.07 14.63 115.07 19.26C115.07 24.13 118.56 27.69 123.64 27.69"></path><path fill="#1d1d1b" d="M133.69 11.12h3.58v16.29h-3.58Z"></path><path fill="#1d1d1b" d="M146.81 27.64C150.32 27.64 152.79 25.82 152.79 22.59C152.79 19.71 150.92 18.52 147.62 17.66C144.81 16.94 144.11 16.59 144.11 15.52C144.11 14.68 144.83 14.05 146.20 14.05C147.57 14.05 148.99 14.66 150.44 15.66L152.30 12.96C150.65 11.63 148.62 10.89 146.25 10.89C142.92 10.89 140.55 12.84 140.55 15.80C140.55 19.08 142.66 19.98 145.95 20.82C148.67 21.52 149.23 21.99 149.23 22.89C149.23 23.89 148.34 24.48 146.88 24.48C145.01 24.48 143.48 23.71 142.01 22.50L139.90 25.03C141.85 26.78 144.34 27.64 146.81 27.64"></path><path fill="#1d1d1b" d="M159.41 27.41L162.99 27.41L162.99 14.42L167.94 14.42L167.94 11.12L154.45 11.12L154.45 14.42L159.41 14.42L159.41 27.41"></path><path fill="#1d1d1b" d="M178.18 24.38C175.30 24.38 173.25 22.05 173.25 19.26C173.25 16.42 175.25 14.14 178.14 14.14C181.02 14.14 183.07 16.47 183.07 19.26C183.07 22.10 181.07 24.38 178.18 24.38M178.14 27.69C183.16 27.69 186.81 23.89 186.81 19.26C186.81 14.59 183.21 10.84 178.18 10.84C173.16 10.84 169.50 14.63 169.50 19.26C169.50 23.94 173.11 27.69 178.14 27.69"></path><path fill="#1d1d1b" d="M189.68 27.41L193.22 27.41L193.22 17.05L201.11 27.41L204.15 27.41L204.15 11.12L200.62 11.12L200.62 21.15L192.99 11.12L189.68 11.12L189.68 27.41"></path><path fill="#1d1d1b" d="M86.80 40.73C85.30 40.73 84.24 39.53 84.24 38.08C84.24 36.61 85.28 35.43 86.77 35.43C88.27 35.43 89.33 36.63 89.33 38.08C89.33 39.55 88.29 40.73 86.80 40.73M86.77 42.44C89.38 42.44 91.27 40.48 91.27 38.08C91.27 35.66 89.40 33.71 86.80 33.71C84.19 33.71 82.30 35.68 82.30 38.08C82.30 40.50 84.17 42.44 86.77 42.44"></path><path fill="#1d1d1b" d="M92.59 37.68L94.55 37.68L94.55 35.75L93.80 35.75C93.74 35.06 94.15 34.64 94.98 34.56L94.83 33.80C93.39 33.82 92.59 34.46 92.59 36.05L92.59 37.68"></path><path fill="#1d1d1b" d="M100.49 40.73C99.00 40.73 97.94 39.53 97.94 38.08C97.94 36.61 98.97 35.43 100.47 35.43C101.96 35.43 103.03 36.63 103.03 38.08C103.03 38.53 102.95 38.91 102.80 39.26L101.41 38.01L100.23 39.33L101.60 40.50C101.28 40.65 100.90 40.73 100.49 40.73M103.91 42.55L105.09 41.24L104.22 40.50C104.70 39.80 104.97 38.96 104.97 38.08C104.97 35.66 103.10 33.71 100.49 33.71C97.89 33.71 96.00 35.68 96.00 38.08C96.00 40.50 97.86 42.44 100.47 42.44C101.41 42.44 102.27 42.18 102.98 41.72L103.91 42.55"></path><path fill="#1d1d1b" d="M110.14 42.43C112.40 42.43 113.84 41.18 113.84 38.62L113.84 33.86L111.98 33.86L111.98 38.69C111.98 40.03 111.29 40.72 110.16 40.72C109.03 40.72 108.34 40.01 108.34 38.63L108.34 33.86L106.48 33.86L106.48 38.68C106.48 41.17 107.87 42.43 110.14 42.43"></path><path fill="#1d1d1b" d="M118.42 42.36L120.06 42.36L123.47 33.86L121.47 33.86L119.26 39.80L117.06 33.86L115.00 33.86L118.42 42.36"></path><path fill="#1d1d1b" d="M128.39 42.30L130.21 42.30L130.21 36.83L132.56 40.39L132.61 40.39L134.98 36.79L134.98 42.30L136.83 42.30L136.83 33.86L134.83 33.86L132.61 37.43L130.39 33.86L128.39 33.86L128.39 42.30"></path><path fill="#1d1d1b" d="M141.46 38.77L142.58 36.03L143.70 38.77L141.46 38.77M138.13 42.30L140.02 42.30L140.80 40.41L144.37 40.41L145.14 42.30L147.08 42.30L143.46 33.80L141.75 33.80L138.13 42.30"></path><path fill="#1d1d1b" d="M150.24 37.96L150.24 35.54L152.08 35.54C152.99 35.54 153.54 35.95 153.54 36.74C153.54 37.48 153.02 37.96 152.12 37.96L150.24 37.96M148.38 42.30L150.24 42.30L150.24 39.60L151.67 39.60L153.51 42.30L155.68 42.30L153.62 39.29C154.69 38.89 155.42 38.03 155.42 36.67C155.42 35.85 155.17 35.19 154.70 34.72C154.15 34.16 153.31 33.86 152.24 33.86L148.38 33.86L148.38 42.30"></path><path fill="#1d1d1b" d="M157.10 42.30L158.95 42.30L158.95 39.72L159.93 38.71L162.55 42.30L164.78 42.30L161.18 37.44L164.62 33.86L162.38 33.86L158.95 37.55L158.95 33.86L157.10 33.86L157.10 42.30"></path><path fill="#1d1d1b" d="M168.27 38.77L169.39 36.03L170.52 38.77L168.27 38.77M164.95 42.30L166.84 42.30L167.61 40.41L171.18 40.41L171.95 42.30L173.89 42.30L170.27 33.80L168.56 33.80L164.95 42.30"></path><path fill="#1d1d1b" d="M174.94 42.30L181.97 42.30L181.97 40.67L177.33 40.67L181.97 35.27L181.97 33.86L175.09 33.86L175.09 35.49L179.58 35.49L174.94 40.89L174.94 42.30"></path><path fill="#1d1d1b" d="M183.82 33.86h1.86v8.44h-1.86Z"></path></svg></button>
-    <div class="crumb" id="crumb">Bepul daraja testi</div>
+    <button class="brand intro" id="brand" aria-label="Registon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.15 52.01"><path class="mk-bar" fill="#e75225" d="M0.00 35.83h67.38v16.18h-67.38Z"></path><path class="mk-top" fill="#e75225" d="M72.58 0.21C72.35 0.34 70.38 1.39 69.37 1.79C65.62 3.28 61.53 3.55 57.55 3.66C55.90 3.72 54.24 3.72 52.59 3.80C49.53 3.95 46.40 4.42 43.60 5.72C42.33 6.30 41.15 7.06 40.10 7.98C39.40 8.59 38.80 9.28 38.23 10.01C36.99 11.58 36.20 13.41 35.51 15.27C34.76 17.31 34.39 19.51 34.06 21.65C33.91 22.64 33.78 23.62 33.69 24.62C33.62 25.41 33.57 25.86 33.54 26.09C33.52 25.96 33.50 25.69 33.44 25.18C33.35 24.39 33.24 23.61 33.11 22.82C32.94 21.75 32.75 20.68 32.41 19.65C31.96 17.98 31.05 15.69 30.20 14.19C29.19 12.37 27.87 10.70 26.29 9.35C24.69 7.99 22.68 6.95 20.67 6.35C18.38 5.67 15.88 5.70 13.52 5.85C12.10 5.93 10.69 6.16 9.33 6.54C8.04 6.90 6.80 7.40 5.63 8.03C4.48 8.65 3.42 9.44 2.47 10.34C1.78 11.01 1.14 11.74 0.59 12.54L0.00 13.38L0.00 19.75C0.00 24.70 0.01 25.77 0.01 26.19C0.22 26.06 0.91 25.65 1.15 25.53C1.54 25.31 1.94 25.11 2.34 24.92C3.28 24.47 4.25 24.12 5.25 23.82C8.80 22.74 12.60 22.48 16.29 22.57C19.24 22.64 22.21 23.04 25.01 23.98C26.67 24.53 28.27 25.27 29.68 26.31C30.65 27.05 31.42 27.85 32.14 28.82C32.62 29.46 33.30 30.68 33.60 31.34C33.91 30.46 34.20 29.93 34.48 29.45C34.74 29.01 35.01 28.57 35.32 28.15C36.01 27.23 36.83 26.40 37.73 25.68C39.19 24.51 40.88 23.63 42.63 22.97C44.87 22.13 47.19 21.62 49.57 21.42C51.91 21.23 54.25 21.22 56.59 21.08C61.72 20.75 67.48 19.07 70.31 14.35C72.18 11.24 72.96 7.76 72.96 2.56C72.96 0.48 72.93 0.45 72.91 0.00C72.83 0.06 72.72 0.13 72.58 0.21"></path><path class="word" fill="#1d1d1b" d="M87.48 19.03L87.48 14.35L91.04 14.35C92.78 14.35 93.85 15.14 93.85 16.68C93.85 18.10 92.85 19.03 91.11 19.03L87.48 19.03M83.89 27.41L87.48 27.41L87.48 22.19L90.25 22.19L93.78 27.41L97.97 27.41L93.99 21.59C96.06 20.82 97.48 19.17 97.48 16.54C97.48 14.96 96.99 13.68 96.09 12.77C95.01 11.70 93.41 11.12 91.34 11.12L83.89 11.12L83.89 27.41"></path><path class="word" fill="#1d1d1b" d="M100.39 27.41L112.79 27.41L112.79 24.22L103.95 24.22L103.95 20.80L111.62 20.80L111.62 17.61L103.95 17.61L103.95 14.31L112.67 14.31L112.67 11.12L100.39 11.12L100.39 27.41"></path><path class="word" fill="#1d1d1b" d="M123.64 27.69C126.62 27.69 128.92 26.52 130.59 25.10L130.59 18.03L123.52 18.03L123.52 21.12L127.13 21.12L127.13 23.45C126.22 24.10 125.06 24.43 123.75 24.43C120.87 24.43 118.82 22.24 118.82 19.26C118.82 16.45 120.89 14.14 123.50 14.14C125.38 14.14 126.50 14.75 127.76 15.80L130.01 13.07C128.31 11.63 126.54 10.84 123.61 10.84C118.68 10.84 115.07 14.63 115.07 19.26C115.07 24.13 118.56 27.69 123.64 27.69"></path><path class="word" fill="#1d1d1b" d="M133.69 11.12h3.58v16.29h-3.58Z"></path><path class="word" fill="#1d1d1b" d="M146.81 27.64C150.32 27.64 152.79 25.82 152.79 22.59C152.79 19.71 150.92 18.52 147.62 17.66C144.81 16.94 144.11 16.59 144.11 15.52C144.11 14.68 144.83 14.05 146.20 14.05C147.57 14.05 148.99 14.66 150.44 15.66L152.30 12.96C150.65 11.63 148.62 10.89 146.25 10.89C142.92 10.89 140.55 12.84 140.55 15.80C140.55 19.08 142.66 19.98 145.95 20.82C148.67 21.52 149.23 21.99 149.23 22.89C149.23 23.89 148.34 24.48 146.88 24.48C145.01 24.48 143.48 23.71 142.01 22.50L139.90 25.03C141.85 26.78 144.34 27.64 146.81 27.64"></path><path class="word" fill="#1d1d1b" d="M159.41 27.41L162.99 27.41L162.99 14.42L167.94 14.42L167.94 11.12L154.45 11.12L154.45 14.42L159.41 14.42L159.41 27.41"></path><path class="word" fill="#1d1d1b" d="M178.18 24.38C175.30 24.38 173.25 22.05 173.25 19.26C173.25 16.42 175.25 14.14 178.14 14.14C181.02 14.14 183.07 16.47 183.07 19.26C183.07 22.10 181.07 24.38 178.18 24.38M178.14 27.69C183.16 27.69 186.81 23.89 186.81 19.26C186.81 14.59 183.21 10.84 178.18 10.84C173.16 10.84 169.50 14.63 169.50 19.26C169.50 23.94 173.11 27.69 178.14 27.69"></path><path class="word" fill="#1d1d1b" d="M189.68 27.41L193.22 27.41L193.22 17.05L201.11 27.41L204.15 27.41L204.15 11.12L200.62 11.12L200.62 21.15L192.99 11.12L189.68 11.12L189.68 27.41"></path><path class="word" fill="#1d1d1b" d="M86.80 40.73C85.30 40.73 84.24 39.53 84.24 38.08C84.24 36.61 85.28 35.43 86.77 35.43C88.27 35.43 89.33 36.63 89.33 38.08C89.33 39.55 88.29 40.73 86.80 40.73M86.77 42.44C89.38 42.44 91.27 40.48 91.27 38.08C91.27 35.66 89.40 33.71 86.80 33.71C84.19 33.71 82.30 35.68 82.30 38.08C82.30 40.50 84.17 42.44 86.77 42.44"></path><path class="word" fill="#1d1d1b" d="M92.59 37.68L94.55 37.68L94.55 35.75L93.80 35.75C93.74 35.06 94.15 34.64 94.98 34.56L94.83 33.80C93.39 33.82 92.59 34.46 92.59 36.05L92.59 37.68"></path><path class="word" fill="#1d1d1b" d="M100.49 40.73C99.00 40.73 97.94 39.53 97.94 38.08C97.94 36.61 98.97 35.43 100.47 35.43C101.96 35.43 103.03 36.63 103.03 38.08C103.03 38.53 102.95 38.91 102.80 39.26L101.41 38.01L100.23 39.33L101.60 40.50C101.28 40.65 100.90 40.73 100.49 40.73M103.91 42.55L105.09 41.24L104.22 40.50C104.70 39.80 104.97 38.96 104.97 38.08C104.97 35.66 103.10 33.71 100.49 33.71C97.89 33.71 96.00 35.68 96.00 38.08C96.00 40.50 97.86 42.44 100.47 42.44C101.41 42.44 102.27 42.18 102.98 41.72L103.91 42.55"></path><path class="word" fill="#1d1d1b" d="M110.14 42.43C112.40 42.43 113.84 41.18 113.84 38.62L113.84 33.86L111.98 33.86L111.98 38.69C111.98 40.03 111.29 40.72 110.16 40.72C109.03 40.72 108.34 40.01 108.34 38.63L108.34 33.86L106.48 33.86L106.48 38.68C106.48 41.17 107.87 42.43 110.14 42.43"></path><path class="word" fill="#1d1d1b" d="M118.42 42.36L120.06 42.36L123.47 33.86L121.47 33.86L119.26 39.80L117.06 33.86L115.00 33.86L118.42 42.36"></path><path class="word" fill="#1d1d1b" d="M128.39 42.30L130.21 42.30L130.21 36.83L132.56 40.39L132.61 40.39L134.98 36.79L134.98 42.30L136.83 42.30L136.83 33.86L134.83 33.86L132.61 37.43L130.39 33.86L128.39 33.86L128.39 42.30"></path><path class="word" fill="#1d1d1b" d="M141.46 38.77L142.58 36.03L143.70 38.77L141.46 38.77M138.13 42.30L140.02 42.30L140.80 40.41L144.37 40.41L145.14 42.30L147.08 42.30L143.46 33.80L141.75 33.80L138.13 42.30"></path><path class="word" fill="#1d1d1b" d="M150.24 37.96L150.24 35.54L152.08 35.54C152.99 35.54 153.54 35.95 153.54 36.74C153.54 37.48 153.02 37.96 152.12 37.96L150.24 37.96M148.38 42.30L150.24 42.30L150.24 39.60L151.67 39.60L153.51 42.30L155.68 42.30L153.62 39.29C154.69 38.89 155.42 38.03 155.42 36.67C155.42 35.85 155.17 35.19 154.70 34.72C154.15 34.16 153.31 33.86 152.24 33.86L148.38 33.86L148.38 42.30"></path><path class="word" fill="#1d1d1b" d="M157.10 42.30L158.95 42.30L158.95 39.72L159.93 38.71L162.55 42.30L164.78 42.30L161.18 37.44L164.62 33.86L162.38 33.86L158.95 37.55L158.95 33.86L157.10 33.86L157.10 42.30"></path><path class="word" fill="#1d1d1b" d="M168.27 38.77L169.39 36.03L170.52 38.77L168.27 38.77M164.95 42.30L166.84 42.30L167.61 40.41L171.18 40.41L171.95 42.30L173.89 42.30L170.27 33.80L168.56 33.80L164.95 42.30"></path><path class="word" fill="#1d1d1b" d="M174.94 42.30L181.97 42.30L181.97 40.67L177.33 40.67L181.97 35.27L181.97 33.86L175.09 33.86L175.09 35.49L179.58 35.49L174.94 40.89L174.94 42.30"></path><path class="word" fill="#1d1d1b" d="M183.82 33.86h1.86v8.44h-1.86Z"></path></svg></button>
+    <div class="hright">
+      <div class="crumb" id="crumb"></div>
+      <div class="lang" id="lang" role="group" aria-label="Til / Язык">
+        <span class="thumb"></span>
+        <button data-l="uz">UZ</button><button data-l="ru">RU</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -217,43 +291,44 @@
   <div class="hero">
     <div class="wrap">
       <div>
-        <div class="kicker"><i></i>Bepul daraja testi</div>
-        <h1>Darajangizni <span>aniqlang</span>, keyin o‘qishni boshlang</h1>
-        <p>Xalqaro shkala asosidagi qisqa test. Savollar javoblaringizga qarab qiyinlashadi yoki osonlashadi, shuning uchun 15–20 ta savolning o‘zi yetadi.</p>
-        <a class="btn" href="#fanlar" onclick="event.preventDefault();document.getElementById('fanlar').scrollIntoView({behavior:'smooth'})">Fanni tanlash ↓</a>
+        <div class="kicker"><i></i><span data-t="kicker"></span></div>
+        <h1 data-t="h1" data-html></h1>
+        <p class="lead-p" data-t="heroP"></p>
+        <button class="btn" id="toSubjects"><span data-t="chooseBtn"></span><span class="ar down">↓</span></button>
         <div class="facts">
-          <div><b>CEFR</b><span>Ingliz tili shkalasi</span></div>
-          <div><b>10–15</b><span>daqiqa</span></div>
-          <div><b>PDF</b><span>natija hisoboti</span></div>
+          <div><b data-count="260">0</b><span data-t="fact1"></span></div>
+          <div><b data-count="5">0</b><span data-t="fact2"></span></div>
+          <div><b>PDF</b><span data-t="fact3"></span></div>
         </div>
       </div>
       <div>
+        <div class="ltabs" id="ltabs"><button data-s="english" class="on"></button><button data-s="russian"></button><button data-s="math"></button></div>
         <div class="ladder" id="heroLadder"></div>
-        <div class="ladder-info" id="ladderInfo">Darajalar ustiga bosing — har biri nimani anglatishini ko‘ring.</div>
+        <div class="ladder-info" id="ladderInfo"></div>
       </div>
     </div>
   </div>
 
   <div class="sec gray" id="fanlar">
     <div class="wrap">
-      <h2>Qaysi fandan test topshirasiz?</h2>
-      <p class="sub">Bittasini tanlang. Tugatgach, ikkinchisini ham topshirishingiz mumkin.</p>
+      <h2 class="reveal" data-t="subjTitle"></h2>
+      <p class="sub reveal" data-t="subjSub"></p>
       <div class="subjects" id="subjCards"></div>
-      <div class="soon">Tez orada: <span class="chip">Rus tili</span><span class="chip">Koreys tili (TOPIK)</span><span class="chip">Xitoy tili (HSK)</span></div>
+      <div class="soon"><span data-t="soon"></span><span class="chip" data-t="soon2"></span><span class="chip" data-t="soon3"></span></div>
     </div>
   </div>
 
   <div class="sec">
     <div class="wrap">
-      <h2>Qanday ishlaydi</h2>
-      <p class="sub">To‘rt qadam — va siz qaysi guruhdan boshlashni bilasiz.</p>
+      <h2 class="reveal" data-t="howTitle"></h2>
+      <p class="sub reveal" data-t="howSub"></p>
       <div class="steps">
-        <div class="step"><div class="n">01</div><h3>Fanni tanlang</h3><p>Ingliz tili yoki matematika.</p></div>
-        <div class="step"><div class="n">02</div><h3>Savollarga javob bering</h3><p>Bilmasangiz, “Bilmayman”ni bosing — taxmin qilmang.</p></div>
-        <div class="step"><div class="n">03</div><h3>Darajangizni oling</h3><p>Natija ekranda chiqadi va PDF bo‘lib yuklanadi.</p></div>
-        <div class="step"><div class="n">04</div><h3>Guruhga yoziling</h3><p>Mutaxassisimiz siz bilan bog‘lanib, mos guruhni taklif qiladi.</p></div>
+        <div class="step reveal"><div class="n">01</div><h3 data-t="st1h"></h3><p data-t="st1p"></p></div>
+        <div class="step reveal"><div class="n">02</div><h3 data-t="st2h"></h3><p data-t="st2p"></p></div>
+        <div class="step reveal"><div class="n">03</div><h3 data-t="st3h"></h3><p data-t="st3p"></p></div>
+        <div class="step reveal"><div class="n">04</div><h3 data-t="st4h"></h3><p data-t="st4p"></p></div>
       </div>
-      <div class="honest"><b>Ochiq gapiramiz</b>Bu test rasmiy sertifikat emas. U grammatika, lug‘at va o‘qib tushunish (matematikada — masala yechish) bo‘yicha taxminiy darajani ko‘rsatadi. Gapirish va yozish ko‘nikmasini o‘qituvchi bilan bepul suhbatda aniqlaymiz.</div>
+      <div class="honest reveal"><b data-t="honestT"></b><span data-t="honestP"></span></div>
     </div>
   </div>
 </section>
@@ -262,17 +337,19 @@
 <section class="screen" id="s-quiz">
   <div class="wrap narrow quiz">
     <div class="qtop">
-      <button class="back" id="qBack">← Fanlar</button>
+      <button class="back" id="qBack"></button>
       <div class="qinfo"><span class="subjname" id="qSubj"></span><span class="timer" id="qTimer">00:00</span></div>
     </div>
-    <div class="bar"><i id="qBar"></i></div>
-    <div class="qcount"><span id="qCount"></span><span class="tag" id="qSkill"></span></div>
-    <div id="qPassage"></div>
-    <div class="qtext" id="qText"></div>
-    <div class="opts" id="qOpts"></div>
+    <div class="segs" id="qSegs"></div>
+    <div class="qcard" id="qCard">
+      <div class="qcount"><span id="qCount"></span><span class="tag" id="qSkill"></span></div>
+      <div id="qPassage"></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+    </div>
     <div class="qfoot">
-      <button class="skip" id="qSkip">Bilmayman</button>
-      <div class="qhint"><kbd>1</kbd>–<kbd>4</kbd> tugmalari bilan ham javob berish mumkin</div>
+      <button class="skip" id="qSkip"></button>
+      <div class="qhint" data-t="hint" data-html></div>
     </div>
   </div>
 </section>
@@ -281,36 +358,33 @@
 <section class="screen" id="s-lead">
   <div class="wrap narrow lead">
     <div class="card">
-      <div class="ready">✓ Test yakunlandi</div>
-      <h2>Darajangiz aniqlandi</h2>
-      <p>Natijani ko‘rish va PDF hisobotni olish uchun ma’lumotlaringizni qoldiring. Mutaxassisimiz sizga mos guruh haqida ma’lumot beradi.</p>
-      <div class="blurlevel"><b id="blurLevel">B1</b><span>Natija ism va telefon raqamingizni kiritgandan keyin ochiladi</span></div>
+      <div class="ready" data-t="ready"></div>
+      <h2 data-t="leadH"></h2>
+      <p data-t="leadP"></p>
+      <div class="blurlevel"><b id="blurLevel">B1</b><span data-t="blurNote"></span></div>
       <form id="leadForm" novalidate>
         <div class="field" id="f-name">
-          <label for="name">Ism va familiya</label>
-          <input id="name" type="text" placeholder="Masalan: Aziz Karimov" autocomplete="name">
-          <div class="err">Ismingizni kiriting</div>
+          <label for="name" data-t="fName"></label>
+          <input id="name" type="text" autocomplete="name">
+          <div class="err" data-t="eName"></div>
         </div>
         <div class="row2">
           <div class="field" id="f-phone">
-            <label for="phone">Telefon raqam</label>
+            <label for="phone" data-t="fPhone"></label>
             <div class="phone"><span>+998</span><input id="phone" type="tel" inputmode="numeric" placeholder="90 123 45 67" autocomplete="tel-national"></div>
-            <div class="err">9 ta raqamni kiriting</div>
+            <div class="err" data-t="ePhone"></div>
           </div>
           <div class="field">
-            <label for="who">Siz kimsiz?</label>
-            <select id="who">
-              <option value="">Tanlang</option>
-              <option>5–8-sinf o‘quvchisi</option><option>9–11-sinf o‘quvchisi</option><option>Abituriyent</option><option>Talaba</option><option>Ishlayman</option><option>Ota-ona (farzandim uchun)</option>
-            </select>
+            <label for="who" data-t="fWho"></label>
+            <select id="who"></select>
           </div>
         </div>
         <div class="field">
-          <label for="tg">Telegram username (ixtiyoriy)</label>
+          <label for="tg" data-t="fTg"></label>
           <input id="tg" type="text" placeholder="@username">
         </div>
         <input type="text" id="hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-        <button class="btn block" type="submit" id="submitBtn">Natijani ko‘rish va PDF olish</button>
+        <button class="btn block" type="submit" id="submitBtn"><span data-t="submit"></span><span class="ar">→</span></button>
       </form>
     </div>
   </div>
@@ -320,7 +394,7 @@
 <section class="screen" id="s-result">
   <div class="wrap result">
     <div class="rtop">
-      <div class="rlevel"><small id="rLvlLabel">Daraja</small><b id="rLvl"></b></div>
+      <div class="rlevel"><small id="rLvlLabel"></small><b id="rLvl"></b></div>
       <div class="rinfo">
         <small id="rSubj"></small>
         <h2 id="rGroup"></h2>
@@ -331,29 +405,29 @@
     <div class="rladder" id="rLadder"></div>
 
     <div class="grid2">
-      <div class="card"><h3>Bo‘limlar bo‘yicha</h3><div class="skills" id="rSkills"></div><p style="font-size:13px;color:var(--gray-600);margin-top:14px" id="rStats"></p></div>
-      <div class="card"><h3 id="rCanTitle">Bu darajada siz…</h3><ul class="cando" id="rCan"></ul></div>
+      <div class="card"><h3 data-t="bySkill"></h3><div class="skills" id="rSkills"></div><p style="font-size:13px;color:var(--gray-600);margin-top:14px" id="rStats"></p></div>
+      <div class="card"><h3 data-t="canTitle"></h3><ul class="cando" id="rCan"></ul></div>
     </div>
 
     <div class="next">
       <div>
-        <h3 id="rNextT">Keyingi qadam: bepul sinov darsi</h3>
+        <h3 id="rNextT"></h3>
         <p id="rNextP"></p>
       </div>
       <div class="btns">
-        <a class="btn dark" id="tgLink" target="_blank" rel="noopener">Telegramda yozish</a>
+        <a class="btn dark" id="tgLink" target="_blank" rel="noopener"><span data-t="tgBtn"></span><span class="ar">→</span></a>
       </div>
     </div>
 
-    <div class="disc">Natija taxminiy va rasmiy sertifikat emas. U test javoblaringiz asosida hisoblandi. Aniq darajani o‘qituvchi bilan suhbatda tasdiqlaymiz.</div>
+    <div class="disc" data-t="disc"></div>
 
     <div class="ract">
-      <button class="btn" id="pdfBtn">↓ PDF hisobotni yuklab olish</button>
-      <button class="btn ghost" id="againBtn">Qayta topshirish</button>
+      <button class="btn" id="pdfBtn"><span class="ar down">↓</span><span data-t="pdfBtn"></span></button>
+      <button class="btn ghost" id="againBtn" data-t="again"></button>
     </div>
 
     <div class="more">
-      <h3>Boshqa fandan ham test topshiring</h3>
+      <h3 data-t="moreT"></h3>
       <div class="subjects" id="moreCards"></div>
     </div>
   </div>
@@ -361,10 +435,11 @@
 
 <footer>
   <div class="wrap">
-    <span>© Registon o‘quv markazi</span>
+    <span data-t="foot"></span>
     <span id="footContact"></span>
   </div>
 </footer>
+<canvas id="confetti"></canvas>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -373,192 +448,621 @@
    ===================================================================== */
 const CONFIG = {
   endpoint: "https://script.google.com/macros/s/AKfycbwq_kRXAzzmAMHbLX-x_YPyveAsGq067pLEaiDAiXV7bYWT7v7TDPj3qc--ebDbj027/exec",   // Google Apps Script Web app URL (README.md)
-  phone: "+998 90 90 515 12 35",               // Registon telefon raqami
-  telegram: "@komronbekmullajonov",              // Registon Telegram (admin yoki kanal)
+  phone: "+998 90 90 515 12 35",             // Registon telefon raqami
+  telegram: "@komronbekmullajonov",            // Registon Telegram (admin yoki kanal)
 };
 
 /* =====================================================================
-   2) FANLAR, DARAJALAR VA SAVOLLAR
-   Har bir savol: { lv: daraja raqami (0 dan), sk: bo‘lim, q: savol, o: [variantlar], a: to‘g‘ri variant indeksi, p?: matn }
-   Savollar ochiq manbalardan ko‘chirilmagan — CEFR ta’riflari asosida yozilgan.
-   O‘qituvchilar ko‘rib chiqib, o‘zgartirishi mumkin.
+   2) FANLAR, DARAJALAR VA SAVOLLAR BAZASI
+   Ingliz tili: 100 ta, rus tili: 100 ta (har darajada 20 ta). Matematika: 60 ta (har darajada 20 ta).
+   Har bir odamga savollar tasodifiy tanlanadi va variantlar aralashtiriladi —
+   shuning uchun ikki kishi bir xil testni olmaydi.
+   Savol: { lv: daraja (0 dan), sk: bo‘lim, q: savol, o: [variantlar], a: to‘g‘ri javob indeksi, p?: matn }
+   Matn ikki tilda bo‘lishi mumkin: {uz:"...", ru:"..."}.
+   Savollar ochiq manbalardan ko‘chirilmagan. O‘qituvchilar ko‘rib chiqib o‘zgartirishi mumkin.
    ===================================================================== */
 const SUBJECTS = {
   english: {
-    title: "Ingliz tili", short: "EN", scale: "CEFR",
-    card: "Grammatika, lug‘at va o‘qib tushunish. Natija CEFR shkalasida (A1–C1) va taxminiy IELTS bali bilan.",
+    title: {uz:"Ingliz tili", ru:"Английский язык"}, short: "EN", type: "lang", ieltsPrefix: true,
+    card: {uz:"Grammatika, lug‘at va o‘qib tushunish. Natija CEFR shkalasida (A1–C1) va taxminiy IELTS bali bilan.",
+           ru:"Грамматика, лексика и чтение. Результат по шкале CEFR (A1–C1) и примерный балл IELTS."},
     chips: ["A1", "A2", "B1", "B2", "C1"], count: 20, minutes: "10–12",
-    skills: { g: "Grammatika", v: "Lug‘at", r: "O‘qib tushunish" },
+    skills: { g:{uz:"Grammatika",ru:"Грамматика"}, v:{uz:"Lug‘at",ru:"Лексика"}, r:{uz:"O‘qib tushunish",ru:"Чтение"} },
     levels: [
       { code:"A1", group:"Beginner", ielts:"—",
-        desc:"Siz ingliz tilida eng oddiy so‘z va iboralarni tushunasiz. Asosni mustahkam qurish uchun eng to‘g‘ri start.",
-        can:["O‘zingiz va oilangiz haqida oddiy gaplar tuza olasiz","Tanish so‘z va qisqa iboralarni tushunasiz","Oddiy savollarga qisqa javob bera olasiz"] },
+        desc:{uz:"Siz ingliz tilida eng oddiy so‘z va iboralarni tushunasiz. Asosni mustahkam qurish uchun eng to‘g‘ri start.",
+              ru:"Вы понимаете самые простые слова и фразы. Лучший старт, чтобы построить прочную базу."},
+        can:{uz:["O‘zingiz va oilangiz haqida oddiy gaplar tuza olasiz","Tanish so‘z va qisqa iboralarni tushunasiz","Oddiy savollarga qisqa javob bera olasiz"],
+             ru:["Можете рассказать о себе и семье простыми фразами","Понимаете знакомые слова и короткие выражения","Можете коротко ответить на простые вопросы"]} },
       { code:"A2", group:"Elementary", ielts:"3.0–3.5",
-        desc:"Kundalik mavzularda oddiy suhbatni tushunasiz va qisqa matnlarni o‘qiy olasiz.",
-        can:["Do‘kon, yo‘l so‘rash kabi oddiy vaziyatlarda gaplasha olasiz","O‘tgan zamonda nima qilganingizni ayta olasiz","Qisqa e’lon va xabarlarni tushunasiz"] },
+        desc:{uz:"Kundalik mavzularda oddiy suhbatni tushunasiz va qisqa matnlarni o‘qiy olasiz.",
+              ru:"Понимаете простой разговор на бытовые темы и читаете короткие тексты."},
+        can:{uz:["Do‘kon, yo‘l so‘rash kabi oddiy vaziyatlarda gaplasha olasiz","O‘tgan zamonda nima qilganingizni ayta olasiz","Qisqa e’lon va xabarlarni tushunasiz"],
+             ru:["Можете общаться в простых ситуациях: магазин, дорога","Можете рассказать, что делали в прошлом","Понимаете короткие объявления и сообщения"]} },
       { code:"B1", group:"Pre-Intermediate", ielts:"4.0–5.0",
-        desc:"Tanish mavzularda erkinroq gapirasiz va asosiy grammatikani bilasiz. Endi tilni kengaytirish vaqti.",
-        can:["Tanish mavzularda fikringizni tushuntira olasiz","Oddiy maqola va xatlarning asosiy g‘oyasini tushunasiz","Sayohatda yuzaga keladigan ko‘p vaziyatlarni hal qila olasiz"] },
+        desc:{uz:"Tanish mavzularda erkinroq gapirasiz va asosiy grammatikani bilasiz. Endi tilni kengaytirish vaqti.",
+              ru:"Свободнее говорите на знакомые темы и знаете основную грамматику. Пора расширять язык."},
+        can:{uz:["Tanish mavzularda fikringizni tushuntira olasiz","Oddiy maqola va xatlarning asosiy g‘oyasini tushunasiz","Sayohatda yuzaga keladigan ko‘p vaziyatlarni hal qila olasiz"],
+             ru:["Можете объяснить своё мнение на знакомые темы","Понимаете главную мысль простых статей и писем","Справляетесь с большинством ситуаций в поездке"]} },
       { code:"B2", group:"Intermediate", ielts:"5.5–6.5",
-        desc:"Murakkabroq matnlarni tushunasiz va ko‘p mavzularda ravon gaplasha olasiz. IELTSga tayyorlanish uchun yaxshi poydevor.",
-        can:["Ko‘p mavzularda ona tili sohibi bilan erkin suhbatlasha olasiz","Murakkab matnlarning asosiy va ikkinchi darajali fikrlarini ajrata olasiz","O‘z nuqtai nazaringizni dalillar bilan himoya qila olasiz"] },
+        desc:{uz:"Murakkabroq matnlarni tushunasiz va ko‘p mavzularda ravon gaplasha olasiz. IELTSga tayyorlanish uchun yaxshi poydevor.",
+              ru:"Понимаете сложные тексты и бегло говорите на многие темы. Хорошая база для подготовки к IELTS."},
+        can:{uz:["Ko‘p mavzularda ona tili sohibi bilan erkin suhbatlasha olasiz","Murakkab matnlarning asosiy va ikkinchi darajali fikrlarini ajrata olasiz","O‘z nuqtai nazaringizni dalillar bilan himoya qila olasiz"],
+             ru:["Свободно общаетесь с носителем на многие темы","Различаете главные и второстепенные мысли сложного текста","Можете аргументированно отстаивать свою точку зрения"]} },
       { code:"C1", group:"IELTS", ielts:"7.0+",
-        desc:"Yuqori daraja: murakkab va uzun matnlarni tushunasiz, tilni moslashuvchan ishlatasiz. Sizga to‘g‘ridan-to‘g‘ri IELTS guruhi mos.",
-        can:["Uzun va murakkab matnlardagi yashirin ma’noni tushunasiz","O‘qish va ish uchun tilni erkin ishlatasiz","Murakkab mavzularda aniq va tuzilgan matn yoza olasiz"] },
+        desc:{uz:"Yuqori daraja: murakkab va uzun matnlarni tushunasiz, tilni moslashuvchan ishlatasiz. Sizga to‘g‘ridan-to‘g‘ri IELTS guruhi mos.",
+              ru:"Высокий уровень: понимаете длинные сложные тексты и гибко используете язык. Вам подходит группа IELTS."},
+        can:{uz:["Uzun va murakkab matnlardagi yashirin ma’noni tushunasiz","O‘qish va ish uchun tilni erkin ishlatasiz","Murakkab mavzularda aniq va tuzilgan matn yoza olasiz"],
+             ru:["Понимаете скрытый смысл длинных и сложных текстов","Свободно используете язык для учёбы и работы","Пишете чёткие и структурированные тексты на сложные темы"]} },
     ],
     items: [
-      // ---- A1 ----
+      // ---------------- A1 (20) ----------------
       {lv:0,sk:"g",q:"She ___ a teacher.",o:["is","am","are","be"],a:0},
       {lv:0,sk:"g",q:"I ___ two brothers and one sister.",o:["have","has","am","is"],a:0},
       {lv:0,sk:"g",q:"___ you like coffee?",o:["Do","Does","Are","Is"],a:0},
       {lv:0,sk:"g",q:"There ___ a book on the table.",o:["is","are","am","be"],a:0},
       {lv:0,sk:"g",q:"He ___ football every Sunday.",o:["plays","play","playing","is play"],a:0},
+      {lv:0,sk:"g",q:"They ___ from Tashkent.",o:["are","is","am","be"],a:0},
+      {lv:0,sk:"g",q:"I have ___ orange and a banana.",o:["an","a","many","two"],a:0},
+      {lv:0,sk:"g",q:"Where ___ your parents live?",o:["do","does","are","is"],a:0},
+      {lv:0,sk:"g",q:"My brother ___ like milk.",o:["doesn’t","don’t","isn’t","not"],a:0},
+      {lv:0,sk:"g",q:"Look! The children ___ in the garden.",o:["are playing","play","plays","is playing"],a:0},
+      {lv:0,sk:"g",q:"These are my friends. ___ names are Ali and Sara.",o:["Their","They","Them","There"],a:0},
+      {lv:0,sk:"g",q:"I can’t find my keys. ___ are they?",o:["Where","What","Who","When"],a:0},
       {lv:0,sk:"v",q:"The opposite of “big” is ___.",o:["small","tall","long","old"],a:0},
       {lv:0,sk:"v",q:"My father’s mother is my ___.",o:["grandmother","aunt","sister","daughter"],a:0},
       {lv:0,sk:"v",q:"We usually eat breakfast in the ___.",o:["morning","night","evening","midnight"],a:0},
+      {lv:0,sk:"v",q:"We use a ___ to cut bread.",o:["knife","spoon","cup","plate"],a:0},
+      {lv:0,sk:"v",q:"There are seven days in a ___.",o:["week","month","year","season"],a:0},
+      {lv:0,sk:"v",q:"I’m hungry. I want to ___ something.",o:["eat","drink","sleep","wear"],a:0},
       {lv:0,sk:"r",p:"Hi, I’m Lola. I am 12 years old. I live in Samarkand with my parents and my little brother. I go to school by bus every day.",q:"How does Lola go to school?",o:["By bus","On foot","By car","By bike"],a:0},
-      // ---- A2 ----
+      {lv:0,sk:"r",p:"Tom’s café opens at 8 a.m. It sells tea, coffee and cakes. On Sundays it is closed.",q:"When is the café closed?",o:["On Sundays","At 8 a.m.","On Mondays","Every evening"],a:0},
+
+      // ---------------- A2 (20) ----------------
       {lv:1,sk:"g",q:"I ___ to the cinema yesterday.",o:["went","go","have gone","was go"],a:0},
       {lv:1,sk:"g",q:"My sister is ___ than me.",o:["taller","more tall","tallest","the tallest"],a:0},
       {lv:1,sk:"g",q:"How ___ water do you drink every day?",o:["much","many","lot","few"],a:0},
       {lv:1,sk:"g",q:"I’m going ___ visit my grandparents next week.",o:["to","for","at","on"],a:0},
       {lv:1,sk:"g",q:"You ___ smoke here. It’s not allowed.",o:["mustn’t","don’t have to","needn’t","aren’t"],a:0},
+      {lv:1,sk:"g",q:"We ___ dinner when the phone rang.",o:["were having","had","have","are having"],a:0},
+      {lv:1,sk:"g",q:"I have never ___ sushi.",o:["eaten","ate","eat","eating"],a:0},
+      {lv:1,sk:"g",q:"This is the ___ film I have ever seen.",o:["best","better","good","most good"],a:0},
+      {lv:1,sk:"g",q:"There isn’t ___ milk in the fridge.",o:["any","some","many","a"],a:0},
+      {lv:1,sk:"g",q:"If you heat ice, it ___.",o:["melts","melt","melted","melting"],a:0},
+      {lv:1,sk:"g",q:"He runs very ___.",o:["fast","fastly","faster","more fast"],a:0},
+      {lv:1,sk:"g",q:"Whose bag is this? — It’s ___.",o:["mine","my","me","I"],a:0},
       {lv:1,sk:"v",q:"Can you ___ me the salt, please?",o:["pass","borrow","carry","keep"],a:0},
       {lv:1,sk:"v",q:"A person who helps doctors and looks after patients in a hospital is a ___.",o:["nurse","pilot","farmer","lawyer"],a:0},
-      {lv:1,sk:"g",q:"We ___ dinner when the phone rang.",o:["were having","had","have","are having"],a:0},
+      {lv:1,sk:"v",q:"I’m sorry, I didn’t ___ what you said.",o:["hear","listen","sound","speak"],a:0},
+      {lv:1,sk:"v",q:"It’s very cold today. Don’t forget your ___.",o:["coat","sunglasses","swimsuit","sandals"],a:0},
+      {lv:1,sk:"v",q:"My flight was ___, so I waited at the airport for three hours.",o:["delayed","landed","booked","crowded"],a:0},
       {lv:1,sk:"r",p:"The museum opens at 9 a.m. and closes at 6 p.m. from Tuesday to Sunday. It is closed on Mondays. Tickets cost 20,000 so‘m for adults and are free for children under 7.",q:"When can you NOT visit the museum?",o:["On Monday","On Sunday at 10 a.m.","On Tuesday afternoon","On Saturday morning"],a:0},
-      // ---- B1 ----
+      {lv:1,sk:"r",p:"Dear Ann, I’m sorry I can’t come to your party on Saturday. My cousin is getting married and the whole family is going to Bukhara. Can we meet next week instead? Love, Kamila",q:"Why can’t Kamila go to the party?",o:["She is going to a wedding.","She is ill.","She has an exam.","She doesn’t like parties."],a:0},
+      {lv:1,sk:"r",p:"Sports Centre: The swimming pool is open from 7 a.m. to 9 p.m. Children under 12 must swim with an adult. Please bring your own towel.",q:"What must children under 12 do?",o:["Swim with an adult","Bring two towels","Come before 7 a.m.","Pay double"],a:0},
+
+      // ---------------- B1 (20) ----------------
       {lv:2,sk:"g",q:"I have lived in this city ___ 2019.",o:["since","for","from","during"],a:0},
       {lv:2,sk:"g",q:"If it rains tomorrow, we ___ at home.",o:["will stay","would stay","stayed","staying"],a:0},
       {lv:2,sk:"g",q:"This letter ___ by my grandfather in 1975.",o:["was written","wrote","has written","is writing"],a:0},
       {lv:2,sk:"g",q:"She asked me where ___.",o:["I lived","did I live","do I live","I do live"],a:0},
       {lv:2,sk:"g",q:"I’m not used ___ up so early.",o:["to getting","to get","get","for getting"],a:0},
+      {lv:2,sk:"g",q:"You ___ wear a uniform at our school; it’s optional.",o:["don’t have to","mustn’t","can’t","shouldn’t have"],a:0},
+      {lv:2,sk:"g",q:"The man ___ car was stolen called the police.",o:["whose","who","which","whom"],a:0},
+      {lv:2,sk:"g",q:"How long ___ you known each other?",o:["have","did","do","are"],a:0},
+      {lv:2,sk:"g",q:"I’d rather ___ at home tonight.",o:["stay","to stay","staying","stayed"],a:0},
+      {lv:2,sk:"g",q:"If I ___ you, I would accept the offer.",o:["were","am","will be","been"],a:0},
+      {lv:2,sk:"g",q:"She’s very good ___ mathematics.",o:["at","in","on","with"],a:0},
       {lv:2,sk:"v",q:"I’m really looking forward ___ you again.",o:["to seeing","to see","for seeing","seeing"],a:0},
       {lv:2,sk:"v",q:"Could you turn ___ the music? I’m trying to sleep.",o:["down","over","into","out"],a:0},
       {lv:2,sk:"v",q:"He didn’t study at all, so he ___ the exam.",o:["failed","lost","missed","dropped"],a:0},
+      {lv:2,sk:"v",q:"Can you ___ after my cat while I’m away?",o:["look","take","care","see"],a:0},
+      {lv:2,sk:"v",q:"I couldn’t ___ the bus, so I was late.",o:["catch","reach","hold","win"],a:0},
+      {lv:2,sk:"v",q:"The concert was so ___ that we left early.",o:["boring","bored","bore","bores"],a:0},
       {lv:2,sk:"r",p:"Many people think that working from home is always easier. However, a recent survey of 2,000 office workers found that 40% felt lonelier at home, and many said they worked longer hours because it was harder to “switch off” at the end of the day.",q:"What does the survey suggest?",o:["Working from home can have disadvantages.","Most workers want to return to the office.","People work fewer hours at home.","Office workers feel lonelier than home workers."],a:0},
-      // ---- B2 ----
+      {lv:2,sk:"r",p:"Our town library is starting a new reading club for teenagers. Meetings will take place every second Thursday from 4 to 5:30 p.m. Members can borrow up to six books at a time instead of the usual three.",q:"What is one benefit of joining the club?",o:["You can borrow more books.","The meetings are every Thursday.","You get free books to keep.","It is only for adults."],a:0},
+      {lv:2,sk:"r",p:"When I moved to Tashkent, I didn’t know anyone. I joined a volunteer group that cleans city parks every Saturday. Within a month I had made several good friends, and now I help organise the events myself.",q:"How did the writer make friends?",o:["By volunteering","At work","At university","Through social media"],a:0},
+
+      // ---------------- B2 (20) ----------------
       {lv:3,sk:"g",q:"By the time we arrived, the film ___.",o:["had already started","already started","has already started","was already start"],a:0},
       {lv:3,sk:"g",q:"I wish I ___ more free time to travel.",o:["had","have","will have","am having"],a:0},
       {lv:3,sk:"g",q:"If I had known about the traffic, I ___ earlier.",o:["would have left","would leave","had left","will leave"],a:0},
       {lv:3,sk:"g",q:"She denied ___ the money.",o:["taking","to take","take","to taking"],a:0},
       {lv:3,sk:"g",q:"It’s high time we ___ home.",o:["went","go","will go","are going"],a:0},
+      {lv:3,sk:"g",q:"The report ___ by the time the manager arrives tomorrow.",o:["will have been finished","will finish","has finished","is finishing"],a:0},
+      {lv:3,sk:"g",q:"She suggested ___ a taxi.",o:["taking","to take","take","us to take"],a:0},
+      {lv:3,sk:"g",q:"You ___ have told me earlier — I could have helped.",o:["should","must","can","will"],a:0},
+      {lv:3,sk:"g",q:"Despite ___ tired, she finished the marathon.",o:["being","she was","to be","of being"],a:0},
+      {lv:3,sk:"g",q:"The more you practise, ___ you become.",o:["the better","better","the best","best"],a:0},
+      {lv:3,sk:"g",q:"He’s used to ___ long hours.",o:["working","work","worked","have worked"],a:0},
       {lv:3,sk:"v",q:"The company had to ___ the project because of a lack of funding.",o:["call off","call up","put up","take after"],a:0},
       {lv:3,sk:"v",q:"His instructions were so ___ that nobody knew what to do.",o:["confusing","confused","confuse","confusion"],a:0},
       {lv:3,sk:"v",q:"We need to ___ a decision by Friday.",o:["make","do","put","bring"],a:0},
+      {lv:3,sk:"v",q:"The meeting was ___ until next week because the director was ill.",o:["postponed","prevented","prolonged","proposed"],a:0},
+      {lv:3,sk:"v",q:"She has a good ___ for detail, which makes her a great editor.",o:["eye","hand","mind","head"],a:0},
+      {lv:3,sk:"v",q:"The new law will come into ___ next January.",o:["force","power","action","place"],a:0},
+      {lv:3,sk:"v",q:"I’m afraid this offer is no longer ___.",o:["available","capable","suitable","reliable"],a:0},
       {lv:3,sk:"r",p:"Although electric cars produce no exhaust emissions, critics point out that their overall environmental impact depends heavily on how the electricity is generated. In countries that rely mainly on coal, the benefits are considerably smaller.",q:"According to the text, the environmental benefit of electric cars…",o:["depends on the source of electricity","is the same in every country","has been completely disproven","is greatest in coal-dependent countries"],a:0},
-      // ---- C1 ----
+      {lv:3,sk:"r",p:"Researchers tracked 500 adults for ten years. Those who walked at least 30 minutes a day were 20% less likely to develop heart disease, regardless of whether they also went to the gym. The authors stress, however, that their study shows a link, not proof of cause.",q:"What do the authors warn about?",o:["The study does not prove that walking causes the benefit.","Walking is less useful than going to the gym.","The results apply only to young people.","Thirty minutes of walking is too little."],a:0},
+
+      // ---------------- C1 (20) ----------------
       {lv:4,sk:"g",q:"Hardly ___ the door when the phone rang.",o:["had I opened","I had opened","did I open","I have opened"],a:0},
       {lv:4,sk:"g",q:"Not only ___ late, but he also forgot the documents.",o:["was he","he was","he is","did he be"],a:0},
       {lv:4,sk:"g",q:"It is essential that every applicant ___ the form in person.",o:["submit","submits","will submit","submitted"],a:0},
       {lv:4,sk:"g",q:"Had I known the truth, I ___ differently.",o:["would have acted","would act","had acted","acted"],a:0},
+      {lv:4,sk:"g",q:"Little ___ that his life was about to change forever.",o:["did he know","he knew","he did know","knew he"],a:0},
+      {lv:4,sk:"g",q:"Under no circumstances ___ the emergency exit be blocked.",o:["should","it should","must not","can’t"],a:0},
+      {lv:4,sk:"g",q:"The proposal, ___ was rejected, would have cost millions.",o:["which","that","what","whom"],a:0},
+      {lv:4,sk:"g",q:"She talks as though she ___ the boss.",o:["were","is being","has been","will be"],a:0},
+      {lv:4,sk:"g",q:"So complex ___ that few people understood it.",o:["was the problem","the problem was","did the problem","the problem"],a:0},
       {lv:4,sk:"v",q:"The new policy has met with ___ criticism from experts.",o:["widespread","widely","wide-ranged","widen"],a:0},
       {lv:4,sk:"v",q:"Her argument doesn’t ___ water — there is no evidence to support it.",o:["hold","keep","carry","take"],a:0},
       {lv:4,sk:"v",q:"Later research ___ the scientist’s findings, confirming every detail.",o:["corroborated","contradicted","undermined","dismissed"],a:0},
       {lv:4,sk:"v",q:"The talks reached an ___, with neither side willing to compromise.",o:["impasse","agreement","outcome","approach"],a:0},
+      {lv:4,sk:"v",q:"The minister tried to ___ the impact of the crisis, insisting it was minor.",o:["downplay","overstate","highlight","uphold"],a:0},
+      {lv:4,sk:"v",q:"His remarks were so ___ that they offended almost everyone.",o:["tactless","tactful","tactical","tactile"],a:0},
+      {lv:4,sk:"v",q:"After months of negotiation, the two companies finally ___ a deal.",o:["struck","hit","beat","knocked"],a:0},
+      {lv:4,sk:"v",q:"The evidence is purely ___; nobody actually saw him do it.",o:["circumstantial","conclusive","eyewitness","substantial"],a:0},
+      {lv:4,sk:"v",q:"The museum’s collection is ___ — it covers everything from ancient coins to modern art.",o:["eclectic","eccentric","elusive","elaborate"],a:0},
       {lv:4,sk:"r",p:"The author’s tone throughout the essay is one of guarded optimism: while she acknowledges the scale of the challenges facing rural schools, she repeatedly highlights small, locally driven initiatives that have produced measurable improvements.",q:"How would you best describe the author’s attitude?",o:["Cautiously hopeful","Completely pessimistic","Indifferent","Openly angry"],a:0},
+      {lv:4,sk:"r",p:"Proponents of the four-day week argue that productivity rises when staff are rested. Yet the trials cited most often were short and involved volunteer firms, which may have been unusually well suited to the change. Extrapolating their results to the wider economy, the author contends, would be premature.",q:"What is the author’s main point?",o:["The evidence is not yet strong enough to generalise.","The four-day week reduces productivity.","All companies should adopt a four-day week now.","Volunteer firms performed worse than others."],a:0},
+    ],
+  },
+
+  russian: {
+    title: {uz:"Rus tili", ru:"Русский язык"}, short: "RU", type: "lang",
+    card: {uz:"Grammatika, lug‘at va o‘qib tushunish. Natija CEFR shkalasida (A1–C1) va unga mos TORFL (ТРКИ) darajasi bilan.",
+           ru:"Грамматика, лексика и чтение. Результат по шкале CEFR (A1–C1) и соответствующий уровень ТРКИ."},
+    chips: ["A1", "A2", "B1", "B2", "C1"], count: 20, minutes: "10–12",
+    skills: { g:{uz:"Grammatika",ru:"Грамматика"}, v:{uz:"Lug‘at",ru:"Лексика"}, r:{uz:"O‘qib tushunish",ru:"Чтение"} },
+    levels: [
+      { code:"A1", group:{uz:"Boshlang‘ich guruh",ru:"Начальная группа"}, tag:{uz:"Elementar",ru:"ТЭУ"}, ielts:{uz:"TORFL: elementar daraja (ТЭУ)",ru:"ТРКИ: элементарный уровень (ТЭУ)"},
+        desc:{uz:"Siz rus tilida eng oddiy so‘z va iboralarni tushunasiz. Asosni mustahkam qurish uchun eng to‘g‘ri start.",
+              ru:"Вы понимаете самые простые слова и фразы по-русски. Лучший старт, чтобы построить прочную базу."},
+        can:{uz:["O‘zingiz va oilangiz haqida oddiy gaplar tuza olasiz","Tanish so‘z va qisqa iboralarni tushunasiz","Oddiy savollarga qisqa javob bera olasiz"],
+             ru:["Можете рассказать о себе и семье простыми фразами","Понимаете знакомые слова и короткие выражения","Можете коротко ответить на простые вопросы"]} },
+      { code:"A2", group:{uz:"Elementar guruh",ru:"Элементарная группа"}, tag:{uz:"Bazaviy",ru:"ТБУ"}, ielts:{uz:"TORFL: bazaviy daraja (ТБУ)",ru:"ТРКИ: базовый уровень (ТБУ)"},
+        desc:{uz:"Kundalik mavzularda oddiy suhbatni tushunasiz va qisqa matnlarni o‘qiy olasiz. Endi kelishiklar va fe’l turlarini mustahkamlash vaqti.",
+              ru:"Понимаете простой разговор на бытовые темы и читаете короткие тексты. Пора закрепить падежи и виды глагола."},
+        can:{uz:["Do‘kon, yo‘l so‘rash kabi oddiy vaziyatlarda gaplasha olasiz","O‘tgan va kelasi zamonda gapira olasiz","Qisqa e’lon va xabarlarni tushunasiz"],
+             ru:["Можете общаться в простых ситуациях: магазин, дорога","Можете говорить в прошедшем и будущем времени","Понимаете короткие объявления и сообщения"]} },
+      { code:"B1", group:{uz:"O‘rta guruh",ru:"Средняя группа"}, tag:{uz:"TRKI-1",ru:"ТРКИ-1"}, ielts:{uz:"TORFL: 1-daraja (ТРКИ-1)",ru:"ТРКИ-1 (первый уровень)"},
+        desc:{uz:"Tanish mavzularda erkinroq gapirasiz va asosiy grammatikani bilasiz. Bu daraja ko‘p universitetlarga o‘qishga kirish uchun talab qilinadi.",
+              ru:"Свободнее говорите на знакомые темы и знаете основную грамматику. Этот уровень нужен для поступления во многие вузы."},
+        can:{uz:["Tanish mavzularda fikringizni tushuntira olasiz","Oddiy maqola va xatlarning asosiy g‘oyasini tushunasiz","Sayohatda yuzaga keladigan ko‘p vaziyatlarni hal qila olasiz"],
+             ru:["Можете объяснить своё мнение на знакомые темы","Понимаете главную мысль простых статей и писем","Справляетесь с большинством ситуаций в поездке"]} },
+      { code:"B2", group:{uz:"Yuqori-o‘rta guruh",ru:"Группа выше среднего"}, tag:{uz:"TRKI-2",ru:"ТРКИ-2"}, ielts:{uz:"TORFL: 2-daraja (ТРКИ-2)",ru:"ТРКИ-2 (второй уровень)"},
+        desc:{uz:"Murakkabroq matnlarni tushunasiz va ko‘p mavzularda ravon gaplasha olasiz. O‘qish va ish uchun yaxshi poydevor.",
+              ru:"Понимаете сложные тексты и бегло говорите на многие темы. Хорошая база для учёбы и работы."},
+        can:{uz:["Ko‘p mavzularda ona tili sohibi bilan erkin suhbatlasha olasiz","Murakkab matnlarning asosiy va ikkinchi darajali fikrlarini ajrata olasiz","O‘z nuqtai nazaringizni dalillar bilan himoya qila olasiz"],
+             ru:["Свободно общаетесь с носителем на многие темы","Различаете главные и второстепенные мысли сложного текста","Можете аргументированно отстаивать свою точку зрения"]} },
+      { code:"C1", group:{uz:"Ilg‘or guruh",ru:"Продвинутая группа"}, tag:{uz:"TRKI-3",ru:"ТРКИ-3"}, ielts:{uz:"TORFL: 3-daraja (ТРКИ-3)",ru:"ТРКИ-3 (третий уровень)"},
+        desc:{uz:"Yuqori daraja: murakkab va uzun matnlarni tushunasiz, tilni moslashuvchan ishlatasiz. Sizga ilg‘or guruh yoki imtihonga tayyorlov mos.",
+              ru:"Высокий уровень: понимаете длинные сложные тексты и гибко используете язык. Вам подходит продвинутая группа или подготовка к экзамену."},
+        can:{uz:["Uzun va murakkab matnlardagi yashirin ma’noni tushunasiz","O‘qish va ish uchun tilni erkin ishlatasiz","Murakkab mavzularda aniq va tuzilgan matn yoza olasiz"],
+             ru:["Понимаете скрытый смысл длинных и сложных текстов","Свободно используете язык для учёбы и работы","Пишете чёткие и структурированные тексты на сложные темы"]} },
+    ],
+    items: [
+      // ---------------- A1 (20) ----------------
+      {lv:0,sk:"g",q:"Это ___ книга.",o:["моя","мой","моё","мои"],a:0},
+      {lv:0,sk:"g",q:"Я ___ в Ташкенте.",o:["живу","живёт","живём","живут"],a:0},
+      {lv:0,sk:"g",q:"Мы ___ по-русски.",o:["говорим","говорю","говорит","говорят"],a:0},
+      {lv:0,sk:"g",q:"Где ___ мама?",o:["твоя","твой","твоё","твои"],a:0},
+      {lv:0,sk:"g",q:"Вчера я ___ дома.",o:["был","есть","буду","быть"],a:0},
+      {lv:0,sk:"g",q:"Я иду ___ магазин.",o:["в","на","к","из"],a:0},
+      {lv:0,sk:"g",q:"Это окно. Оно ___.",o:["большое","большой","большая","большие"],a:0},
+      {lv:0,sk:"g",q:"Я очень люблю ___.",o:["маму","мама","маме","мамой"],a:0},
+      {lv:0,sk:"g",q:"___ тебя зовут?",o:["Как","Что","Где","Кто"],a:0},
+      {lv:0,sk:"g",q:"Они ___ в школе.",o:["учатся","учится","учусь","учимся"],a:0},
+      {lv:0,sk:"g",q:"Это мой ___.",o:["брат","сестра","мама","тётя"],a:0},
+      {lv:0,sk:"g",q:"У меня ___ собака.",o:["есть","быть","будь","буду"],a:0},
+      {lv:0,sk:"v",q:"Утром я пью ___.",o:["чай","хлеб","суп","сыр"],a:0},
+      {lv:0,sk:"v",q:"Противоположность слова «большой» — ___.",o:["маленький","высокий","длинный","старый"],a:0},
+      {lv:0,sk:"v",q:"Мама моего отца — это моя ___.",o:["бабушка","тётя","сестра","дочь"],a:0},
+      {lv:0,sk:"v",q:"В неделе семь ___.",o:["дней","месяцев","лет","часов"],a:0},
+      {lv:0,sk:"v",q:"Зимой обычно ___.",o:["холодно","жарко","душно","знойно"],a:0},
+      {lv:0,sk:"v",q:"Я читаю интересную ___.",o:["книгу","ручку","тарелку","дверь"],a:0},
+      {lv:0,sk:"r",p:"Меня зовут Анвар. Мне 20 лет. Я студент. Я живу в Самарканде и учусь в университете.",q:"Где учится Анвар?",o:["В университете","В школе","В колледже","Дома"],a:0},
+      {lv:0,sk:"r",p:"Магазин работает с 9 утра до 8 вечера. В воскресенье магазин не работает.",q:"Когда магазин закрыт?",o:["В воскресенье","В понедельник","В 9 утра","В субботу"],a:0},
+
+      // ---------------- A2 (20) ----------------
+      {lv:1,sk:"g",q:"Я давно не видел ___ брата.",o:["своего","свой","своему","своим"],a:0},
+      {lv:1,sk:"g",q:"Завтра мы ___ в кино.",o:["пойдём","пошли","ходили","шли"],a:0},
+      {lv:1,sk:"g",q:"У меня сейчас нет ___.",o:["времени","время","временем","временах"],a:0},
+      {lv:1,sk:"g",q:"Я подарил цветы ___.",o:["маме","мама","маму","мамой"],a:0},
+      {lv:1,sk:"g",q:"Эта книга ___, чем та.",o:["интереснее","интересная","интересно","интереснейшая"],a:0},
+      {lv:1,sk:"g",q:"Я занимаюсь ___.",o:["спортом","спорт","спорта","спорту"],a:0},
+      {lv:1,sk:"g",q:"Мы живём ___ третьем этаже.",o:["на","в","по","за"],a:0},
+      {lv:1,sk:"g",q:"Вчера весь вечер я ___ телевизор.",o:["смотрел","посмотрю","смотрю","смотреть"],a:0},
+      {lv:1,sk:"g",q:"Позвони мне, когда ___ домой.",o:["придёшь","приходишь","пришёл","придёт"],a:0},
+      {lv:1,sk:"g",q:"Сколько вам ___?",o:["лет","года","годов","год"],a:0},
+      {lv:1,sk:"g",q:"Я хочу, ___ ты пришёл.",o:["чтобы","что","если","когда"],a:0},
+      {lv:1,sk:"g",q:"Мой друг ___ из Москвы вчера вечером.",o:["приехал","приезжает","приедет","приезжать"],a:0},
+      {lv:1,sk:"v",q:"Я опоздал, потому что ___ автобус.",o:["пропустил","потерял","забыл","оставил"],a:0},
+      {lv:1,sk:"v",q:"Врач работает в ___.",o:["больнице","банке","театре","магазине"],a:0},
+      {lv:1,sk:"v",q:"Можно ___ ваш телефон? Мой разрядился.",o:["взять","дать","отдать","продать"],a:0},
+      {lv:1,sk:"v",q:"На улице дождь, возьми ___.",o:["зонт","купальник","сандалии","солнцезащитный крем"],a:0},
+      {lv:1,sk:"v",q:"Я плохо себя ___, у меня болит голова.",o:["чувствую","думаю","знаю","вижу"],a:0},
+      {lv:1,sk:"r",p:"Дорогая Нигора! Извини, я не смогу прийти на твой день рождения в субботу. Мой брат женится, и вся семья едет в Бухару. Давай встретимся на следующей неделе? Целую, Камила.",q:"Почему Камила не придёт?",o:["Она едет на свадьбу брата.","Она заболела.","У неё экзамен.","Она не любит праздники."],a:0},
+      {lv:1,sk:"r",p:"Бассейн работает с 7:00 до 21:00. Дети до 12 лет могут плавать только со взрослыми. Полотенце нужно приносить с собой.",q:"Что должны делать дети до 12 лет?",o:["Плавать со взрослыми","Приходить до 7 утра","Платить больше","Приносить два полотенца"],a:0},
+      {lv:1,sk:"r",p:"Музей открыт со вторника по воскресенье с 10 до 18 часов. Понедельник — выходной. Для детей до 7 лет вход бесплатный.",q:"Когда нельзя посетить музей?",o:["В понедельник","В воскресенье в 11 часов","Во вторник днём","В субботу утром"],a:0},
+
+      // ---------------- B1 (20) ----------------
+      {lv:2,sk:"g",q:"Если бы у меня было время, я ___ тебе помог.",o:["бы","был","буду","было"],a:0},
+      {lv:2,sk:"g",q:"Книга, ___ ты мне дал, очень интересная.",o:["которую","которая","которой","который"],a:0},
+      {lv:2,sk:"g",q:"Этот дом ___ в прошлом году.",o:["был построен","построил","строит","будет строить"],a:0},
+      {lv:2,sk:"g",q:"Он сказал, ___ придёт завтра.",o:["что","чтобы","ли","бы"],a:0},
+      {lv:2,sk:"g",q:"Я не знаю, придёт ___ он.",o:["ли","бы","же","то"],a:0},
+      {lv:2,sk:"g",q:"___ домой, я сразу лёг спать.",o:["Вернувшись","Возвращаясь","Вернулся","Вернуться"],a:0},
+      {lv:2,sk:"g",q:"Мы очень гордимся ___.",o:["нашими детьми","наших детей","нашим детям","наши дети"],a:0},
+      {lv:2,sk:"g",q:"Мне нужно ___ этот отчёт к пятнице.",o:["закончить","закончил","закончу","заканчиваю"],a:0},
+      {lv:2,sk:"g",q:"Студенты интересуются ___.",o:["историей","историю","истории","история"],a:0},
+      {lv:2,sk:"g",q:"Чем больше читаешь, ___ знаешь.",o:["тем больше","тем более","так больше","больше"],a:0},
+      {lv:2,sk:"g",q:"Я привык ___ рано.",o:["вставать","встать","вставал","встаю"],a:0},
+      {lv:2,sk:"v",q:"Не забудь ___ свет, когда будешь уходить.",o:["выключить","закрыть","убрать","снять"],a:0},
+      {lv:2,sk:"v",q:"Он совсем не готовился и ___ экзамен.",o:["провалил","потерял","забыл","упустил"],a:0},
+      {lv:2,sk:"v",q:"Мне очень ___ этот фильм, он такой смешной!",o:["понравился","понравилась","понравилось","понравились"],a:0},
+      {lv:2,sk:"v",q:"Можешь ___ за моей кошкой, пока я в отъезде?",o:["присмотреть","посмотреть","рассмотреть","просмотреть"],a:0},
+      {lv:2,sk:"v",q:"Концерт был такой ___, что мы ушли раньше.",o:["скучный","скучающий","скучно","скука"],a:0},
+      {lv:2,sk:"r",p:"Многие считают, что работать из дома проще. Однако опрос 2000 сотрудников показал: 40% чувствуют себя дома более одинокими, а многие работают дольше, потому что им труднее «выключиться» вечером.",q:"Что показал опрос?",o:["У работы из дома есть минусы.","Большинство хочет вернуться в офис.","Дома люди работают меньше.","В офисе люди более одиноки."],a:0},
+      {lv:2,sk:"r",p:"Городская библиотека открывает клуб чтения для подростков. Встречи проходят каждый второй четверг с 16:00 до 17:30. Участники клуба могут брать шесть книг вместо обычных трёх.",q:"Какое преимущество у участников клуба?",o:["Можно брать больше книг.","Встречи проходят каждый день.","Книги дарят бесплатно.","Клуб только для взрослых."],a:0},
+      {lv:2,sk:"r",p:"Когда я переехал в Ташкент, я никого не знал. Я записался в группу волонтёров, которые по субботам убирают городские парки. Через месяц у меня появилось несколько хороших друзей.",q:"Как автор нашёл друзей?",o:["Через волонтёрство","На работе","В университете","В интернете"],a:0},
+      {lv:2,sk:"r",p:"Уважаемые пассажиры! В связи с ремонтом станция метро «Чиланзар» будет закрыта с 1 по 10 марта. Пожалуйста, пользуйтесь автобусами № 45 и № 67.",q:"Что должны делать пассажиры с 1 по 10 марта?",o:["Ездить на автобусе","Ехать на такси","Ждать на станции","Покупать новые билеты"],a:0},
+
+      // ---------------- B2 (20) ----------------
+      {lv:3,sk:"g",q:"Если бы я знал о пробках, я бы ___ раньше.",o:["выехал","выеду","выезжаю","выехать"],a:0},
+      {lv:3,sk:"g",q:"Несмотря ___ усталость, она закончила марафон.",o:["на","о","в","с"],a:0},
+      {lv:3,sk:"g",q:"Чем раньше начнёшь, ___ лучше.",o:["тем","так","чем","том"],a:0},
+      {lv:3,sk:"g",q:"Проект, ___ мы работали целый год, наконец завершён.",o:["над которым","о котором","за которым","к которому"],a:0},
+      {lv:3,sk:"g",q:"Ему пришлось отказаться ___ поездки.",o:["от","из","с","без"],a:0},
+      {lv:3,sk:"g",q:"Она сделала вид, ___ ничего не заметила.",o:["будто","чтобы","если","хотя"],a:0},
+      {lv:3,sk:"g",q:"Ни один студент ___ на этот вопрос.",o:["не ответил","ответил","ни ответил","не ответили"],a:0},
+      {lv:3,sk:"g",q:"Он извинился ___ опоздание.",o:["за","о","на","в"],a:0},
+      {lv:3,sk:"g",q:"Мы обсудили вопрос, ___ касается всех.",o:["который","которого","которому","которым"],a:0},
+      {lv:3,sk:"g",q:"Как только ___ дождь, мы пошли гулять.",o:["закончился","заканчивался","закончится","кончаться"],a:0},
+      {lv:3,sk:"g",q:"К приезду директора отчёт уже ___ готов.",o:["будет","был бы","есть","стал бы"],a:0},
+      {lv:3,sk:"v",q:"Совещание ___ на следующую неделю, так как директор заболел.",o:["перенесли","предотвратили","продлили","предложили"],a:0},
+      {lv:3,sk:"v",q:"Компании пришлось ___ от проекта из-за нехватки денег.",o:["отказаться","отвыкнуть","отличиться","отозваться"],a:0},
+      {lv:3,sk:"v",q:"Нам нужно ___ решение до пятницы.",o:["принять","сделать","поставить","дать"],a:0},
+      {lv:3,sk:"v",q:"Его объяснения были настолько ___, что никто ничего не понял.",o:["запутанными","запутанно","запутаться","путаница"],a:0},
+      {lv:3,sk:"v",q:"Новый закон вступит в ___ в январе.",o:["силу","власть","место","мощь"],a:0},
+      {lv:3,sk:"v",q:"Он человек слова и не бросает слов на ___.",o:["ветер","воздух","землю","небо"],a:0},
+      {lv:3,sk:"v",q:"Его история ___ всех до глубины души.",o:["тронула","тронулась","трогалась","затронулась"],a:0},
+      {lv:3,sk:"r",p:"Хотя электромобили не дают выхлопных газов, критики отмечают, что их общий вред для природы сильно зависит от того, как производится электричество. В странах, где основной источник — уголь, польза заметно меньше.",q:"От чего, по тексту, зависит экологическая польза электромобилей?",o:["От источника электричества","От цены автомобиля","От погоды","От количества машин в городе"],a:0},
+      {lv:3,sk:"r",p:"Учёные десять лет наблюдали за 500 взрослыми. Те, кто ходил пешком не меньше 30 минут в день, на 20% реже болели сердечными заболеваниями, даже если не ходили в спортзал. Однако авторы подчёркивают: исследование показывает связь, а не доказывает причину.",q:"О чём предупреждают авторы?",o:["Исследование не доказывает, что польза вызвана ходьбой.","Ходьба полезнее спортзала.","Результаты верны только для молодых.","30 минут ходьбы — это слишком мало."],a:0},
+
+      // ---------------- C1 (20) ----------------
+      {lv:4,sk:"g",q:"Не успел он открыть дверь, ___ зазвонил телефон.",o:["как","что","когда","чем"],a:0},
+      {lv:4,sk:"g",q:"Будь у меня больше времени, я ___ этим занялся.",o:["бы","же","ли","то"],a:0},
+      {lv:4,sk:"g",q:"Необходимо, чтобы каждый участник ___ анкету лично.",o:["заполнил","заполнит","заполняет","заполнять"],a:0},
+      {lv:4,sk:"g",q:"Сколько ___ ни старался, у него ничего не получалось.",o:["он","бы он","ни он","же он"],a:0},
+      {lv:4,sk:"g",q:"___ в курс дела, новый сотрудник сразу приступил к работе.",o:["Войдя","Входя","Вошедший","Войдёт"],a:0},
+      {lv:4,sk:"g",q:"Решение, ___ после долгих споров, устроило всех.",o:["принятое","принявшее","принимающее","принято"],a:0},
+      {lv:4,sk:"g",q:"Ни при каких обстоятельствах аварийный выход не ___ быть заблокирован.",o:["должен","должна","должно","должны"],a:0},
+      {lv:4,sk:"g",q:"Чего он только ___ делал, чтобы её убедить!",o:["не","ни","же","бы"],a:0},
+      {lv:4,sk:"g",q:"Ему ничего не оставалось, ___ согласиться.",o:["как","что","чтобы","если"],a:0},
+      {lv:4,sk:"v",q:"Министр пытался ___ масштаб кризиса, утверждая, что всё под контролем.",o:["преуменьшить","преувеличить","подчеркнуть","поддержать"],a:0},
+      {lv:4,sk:"v",q:"Его замечания были настолько ___, что обидели почти всех.",o:["бестактными","тактичными","тактическими","тактильными"],a:0},
+      {lv:4,sk:"v",q:"После долгих переговоров компании наконец ___ сделку.",o:["заключили","ударили","связали","построили"],a:0},
+      {lv:4,sk:"v",q:"Доказательства чисто ___: никто не видел, как он это сделал.",o:["косвенные","прямые","неопровержимые","очевидные"],a:0},
+      {lv:4,sk:"v",q:"Переговоры зашли в ___: ни одна сторона не хотела уступать.",o:["тупик","угол","яму","конец"],a:0},
+      {lv:4,sk:"v",q:"Новая политика вызвала ___ критику экспертов.",o:["широкую","широко","ширину","расширение"],a:0},
+      {lv:4,sk:"v",q:"Его аргумент не выдерживает ___: доказательств нет.",o:["критики","критиков","критиковать","критично"],a:0},
+      {lv:4,sk:"v",q:"Последующие исследования ___ выводы учёного, подтвердив каждую деталь.",o:["подкрепили","опровергли","подорвали","отвергли"],a:0},
+      {lv:4,sk:"v",q:"Коллекция музея весьма ___: от древних монет до современного искусства.",o:["разнообразна","однообразна","скромна","малочисленна"],a:0},
+      {lv:4,sk:"r",p:"Сторонники четырёхдневной рабочей недели утверждают, что отдохнувшие сотрудники работают продуктивнее. Однако чаще всего цитируемые эксперименты были короткими и проводились в компаниях-добровольцах, которые, возможно, изначально лучше подходили для такого перехода. Распространять их выводы на всю экономику, по мнению автора, преждевременно.",q:"В чём основная мысль автора?",o:["Данных пока недостаточно для обобщений.","Четырёхдневка снижает продуктивность.","Всем компаниям нужно срочно перейти на четырёхдневку.","Компании-добровольцы показали худшие результаты."],a:0},
+      {lv:4,sk:"r",p:"Тон автора — сдержанный оптимизм: признавая масштаб проблем сельских школ, она раз за разом обращает внимание на небольшие местные инициативы, которые дали ощутимые результаты.",q:"Как лучше всего описать отношение автора?",o:["Осторожная надежда","Полный пессимизм","Безразличие","Открытый гнев"],a:0},
     ],
   },
 
   math: {
-    title: "Matematika", short: "∑", scale: "Daraja",
-    card: "Arifmetika, algebra, geometriya va mantiq. Natija maktab dasturi va abituriyent darajasi bo‘yicha.",
-    chips: ["5–7-sinf", "8–9-sinf", "Abituriyent"], count: 15, minutes: "12–15",
-    skills: { ar: "Arifmetika", al: "Algebra", ge: "Geometriya", lo: "Mantiq va funksiyalar" },
+    title: {uz:"Matematika", ru:"Математика"}, short: "∑", type: "math",
+    card: {uz:"Arifmetika, algebra, geometriya va mantiq. Natija maktab dasturi va abituriyent darajasi bo‘yicha.",
+           ru:"Арифметика, алгебра, геометрия и логика. Результат по школьной программе и уровню абитуриента."},
+    chips: [{uz:"5–7-sinf",ru:"5–7 класс"}, {uz:"8–9-sinf",ru:"8–9 класс"}, {uz:"Abituriyent",ru:"Абитуриент"}], count: 15, minutes: "12–15",
+    skills: { ar:{uz:"Arifmetika",ru:"Арифметика"}, al:{uz:"Algebra",ru:"Алгебра"}, ge:{uz:"Geometriya",ru:"Геометрия"}, lo:{uz:"Mantiq va funksiyalar",ru:"Логика и функции"} },
     levels: [
-      { code:"I", group:"Boshlang‘ich guruh", ielts:"5–7-sinf dasturi",
-        desc:"Kasrlar, foizlar va oddiy tenglamalar bilan ishlaysiz. Asosni mustahkamlab, algebraga o‘tish uchun eng to‘g‘ri guruh.",
-        can:["Kasr va o‘nli kasrlar bilan amallar bajarasiz","Foiz va nisbatga oid masalalarni yechasiz","Oddiy chiziqli tenglamalarni yechasiz"] },
-      { code:"II", group:"O‘rta guruh", ielts:"8–9-sinf dasturi",
-        desc:"Kvadrat tenglamalar, ildizlar va asosiy geometriyani bilasiz. Endi abituriyent darajasiga tayyorlanish vaqti.",
-        can:["Kvadrat tenglama va tenglamalar sistemasini yechasiz","Pifagor teoremasi va yuzalarni hisoblaysiz","Chiziqli funksiya va darajalar bilan ishlaysiz"] },
-      { code:"III", group:"Abituriyent guruhi", ielts:"10–11-sinf va DTM",
-        desc:"Logarifm, trigonometriya va hosila kabi yuqori sinf mavzularini bilasiz. Sizga test imtihoniga tayyorlov guruhi mos.",
-        can:["Logarifm va ko‘rsatkichli tenglamalarni yechasiz","Hosila va integralning asosiy qoidalarini qo‘llaysiz","Progressiya va tengsizliklarga oid masalalarni yechasiz"] },
+      { code:"I", group:{uz:"Boshlang‘ich guruh",ru:"Начальная группа"}, ielts:{uz:"5–7-sinf dasturi",ru:"Программа 5–7 класса"},
+        desc:{uz:"Kasrlar, foizlar va oddiy tenglamalar bilan ishlaysiz. Asosni mustahkamlab, algebraga o‘tish uchun eng to‘g‘ri guruh.",
+              ru:"Работаете с дробями, процентами и простыми уравнениями. Лучшая группа, чтобы укрепить базу и перейти к алгебре."},
+        can:{uz:["Kasr va o‘nli kasrlar bilan amallar bajarasiz","Foiz va nisbatga oid masalalarni yechasiz","Oddiy chiziqli tenglamalarni yechasiz"],
+             ru:["Выполняете действия с обыкновенными и десятичными дробями","Решаете задачи на проценты и отношения","Решаете простые линейные уравнения"]} },
+      { code:"II", group:{uz:"O‘rta guruh",ru:"Средняя группа"}, ielts:{uz:"8–9-sinf dasturi",ru:"Программа 8–9 класса"},
+        desc:{uz:"Kvadrat tenglamalar, ildizlar va asosiy geometriyani bilasiz. Endi abituriyent darajasiga tayyorlanish vaqti.",
+              ru:"Знаете квадратные уравнения, корни и основы геометрии. Пора готовиться к уровню абитуриента."},
+        can:{uz:["Kvadrat tenglama va tenglamalar sistemasini yechasiz","Pifagor teoremasi va yuzalarni hisoblaysiz","Chiziqli funksiya va darajalar bilan ishlaysiz"],
+             ru:["Решаете квадратные уравнения и системы","Применяете теорему Пифагора и считаете площади","Работаете с линейной функцией и степенями"]} },
+      { code:"III", group:{uz:"Abituriyent guruhi",ru:"Группа абитуриентов"}, ielts:{uz:"10–11-sinf va DTM",ru:"10–11 класс и вступительные"},
+        desc:{uz:"Logarifm, trigonometriya va hosila kabi yuqori sinf mavzularini bilasiz. Sizga test imtihoniga tayyorlov guruhi mos.",
+              ru:"Знаете логарифмы, тригонометрию и производную. Вам подходит группа подготовки к вступительным тестам."},
+        can:{uz:["Logarifm va ko‘rsatkichli tenglamalarni yechasiz","Hosila va integralning asosiy qoidalarini qo‘llaysiz","Progressiya va tengsizliklarga oid masalalarni yechasiz"],
+             ru:["Решаете логарифмические и показательные уравнения","Применяете основные правила производной и интеграла","Решаете задачи на прогрессии и неравенства"]} },
     ],
     items: [
-      // ---- I: 5–7-sinf ----
+      // ---------------- I: 5–7-sinf (20) ----------------
       {lv:0,sk:"ar",q:"3/4 + 1/8 = ?",o:["7/8","4/12","1","5/8"],a:0},
-      {lv:0,sk:"ar",q:"240 ning 15% i nechaga teng?",o:["36","24","32","40"],a:0},
+      {lv:0,sk:"ar",q:{uz:"240 ning 15% i nechaga teng?",ru:"Чему равны 15% от 240?"},o:["36","24","32","40"],a:0},
       {lv:0,sk:"ar",q:"−7 + 12 − (−3) = ?",o:["8","2","−2","22"],a:0},
       {lv:0,sk:"ar",q:"0,25 × 0,4 = ?",o:["0,1","0,01","1","0,65"],a:0},
-      {lv:0,sk:"al",q:"3x + 5 = 20 tenglamani yeching.",o:["x = 5","x = 15","x = 25/3","x = 6"],a:0},
-      {lv:0,sk:"ge",q:"Bo‘yi 8 sm, eni 5 sm bo‘lgan to‘g‘ri to‘rtburchakning perimetri qancha?",o:["26 sm","13 sm","40 sm","30 sm"],a:0},
-      {lv:0,sk:"ge",q:"Uchburchakning ikki burchagi 50° va 60°. Uchinchi burchak necha gradus?",o:["70°","80°","90°","110°"],a:0},
-      {lv:0,sk:"lo",q:"50 ta konfet ikki bolaga 2 : 3 nisbatda bo‘lindi. Kamroq olgan bolaga nechta tegdi?",o:["20","30","25","10"],a:0},
-      {lv:0,sk:"lo",q:"Ketma-ketlikni davom ettiring: 2, 6, 18, 54, …",o:["162","108","72","216"],a:0},
-      // ---- II: 8–9-sinf ----
-      {lv:1,sk:"al",q:"(x + 3)² ifodani ochib yozing.",o:["x² + 6x + 9","x² + 9","x² + 3x + 9","x² + 6x + 6"],a:0},
-      {lv:1,sk:"al",q:"x² − 5x + 6 = 0 tenglamaning ildizlari:",o:["2 va 3","−2 va −3","1 va 6","−1 va 6"],a:0},
-      {lv:1,sk:"ar",q:"√50 ni soddalashtiring.",o:["5√2","25√2","2√5","10√5"],a:0},
+      {lv:0,sk:"ar",q:"1/2 + 1/3 = ?",o:["5/6","2/5","1/5","2/6"],a:0},
+      {lv:0,sk:"ar",q:{uz:"12 va 18 sonlarining EKUBi nechaga teng?",ru:"Чему равен НОД чисел 12 и 18?"},o:["6","3","2","36"],a:0},
+      {lv:0,sk:"ar",q:"2,5 + 1,75 = ?",o:["4,25","3,25","4,5","3,75"],a:0},
+      {lv:0,sk:"ar",q:{uz:"Mahsulot 80 000 so‘m edi, unga 25% chegirma qilindi. Yangi narx qancha?",ru:"Товар стоил 80 000 сумов, на него сделали скидку 25%. Какова новая цена?"},o:["60 000","55 000","20 000","64 000"],a:0},
+      {lv:0,sk:"al",q:{uz:"3x + 5 = 20 tenglamani yeching.",ru:"Решите уравнение 3x + 5 = 20."},o:["x = 5","x = 15","x = 25/3","x = 6"],a:0},
+      {lv:0,sk:"al",q:{uz:"2(x − 3) = 10 tenglamani yeching.",ru:"Решите уравнение 2(x − 3) = 10."},o:["x = 8","x = 2","x = 5","x = 7"],a:0},
+      {lv:0,sk:"al",q:{uz:"a = 3 bo‘lsa, 4a − 5 ifodaning qiymati nechaga teng?",ru:"Найдите значение выражения 4a − 5 при a = 3."},o:["7","17","12","2"],a:0},
+      {lv:0,sk:"ge",q:{uz:"Bo‘yi 8 sm, eni 5 sm bo‘lgan to‘g‘ri to‘rtburchakning perimetri qancha?",ru:"Длина прямоугольника 8 см, ширина 5 см. Чему равен его периметр?"},o:[{uz:"26 sm",ru:"26 см"},{uz:"13 sm",ru:"13 см"},{uz:"40 sm",ru:"40 см"},{uz:"30 sm",ru:"30 см"}],a:0},
+      {lv:0,sk:"ge",q:{uz:"Uchburchakning ikki burchagi 50° va 60°. Uchinchi burchak necha gradus?",ru:"Два угла треугольника равны 50° и 60°. Чему равен третий угол?"},o:["70°","80°","90°","110°"],a:0},
+      {lv:0,sk:"ge",q:{uz:"Kvadratning tomoni 7 sm. Uning yuzi qancha?",ru:"Сторона квадрата 7 см. Чему равна его площадь?"},o:[{uz:"49 sm²",ru:"49 см²"},{uz:"28 sm²",ru:"28 см²"},{uz:"14 sm²",ru:"14 см²"},{uz:"21 sm²",ru:"21 см²"}],a:0},
+      {lv:0,sk:"ge",q:{uz:"Kubning qirrasi 3 sm. Uning hajmi qancha?",ru:"Ребро куба 3 см. Чему равен его объём?"},o:[{uz:"27 sm³",ru:"27 см³"},{uz:"9 sm³",ru:"9 см³"},{uz:"18 sm³",ru:"18 см³"},{uz:"12 sm³",ru:"12 см³"}],a:0},
+      {lv:0,sk:"lo",q:{uz:"50 ta konfet ikki bolaga 2 : 3 nisbatda bo‘lindi. Kamroq olgan bolaga nechta tegdi?",ru:"50 конфет разделили между двумя детьми в отношении 2 : 3. Сколько получил тот, кому досталось меньше?"},o:["20","30","25","10"],a:0},
+      {lv:0,sk:"lo",q:{uz:"Ketma-ketlikni davom ettiring: 2, 6, 18, 54, …",ru:"Продолжите последовательность: 2, 6, 18, 54, …"},o:["162","108","72","216"],a:0},
+      {lv:0,sk:"lo",q:{uz:"Ketma-ketlikni davom ettiring: 1, 4, 9, 16, …",ru:"Продолжите последовательность: 1, 4, 9, 16, …"},o:["25","20","24","32"],a:0},
+      {lv:0,sk:"lo",q:{uz:"Hozir soat 14:45. 2 soat 30 daqiqadan keyin soat necha bo‘ladi?",ru:"Сейчас 14:45. Сколько будет времени через 2 ч 30 мин?"},o:["17:15","16:15","17:45","16:45"],a:0},
+      {lv:0,sk:"lo",q:{uz:"Avtomobil 3 soatda 240 km yo‘l yurdi. Uning tezligi qancha?",ru:"Автомобиль проехал 240 км за 3 часа. Какова его скорость?"},o:[{uz:"80 km/soat",ru:"80 км/ч"},{uz:"60 km/soat",ru:"60 км/ч"},{uz:"720 km/soat",ru:"720 км/ч"},{uz:"120 km/soat",ru:"120 км/ч"}],a:0},
+
+      // ---------------- II: 8–9-sinf (20) ----------------
+      {lv:1,sk:"al",q:{uz:"(x + 3)² ifodani ochib yozing.",ru:"Раскройте скобки: (x + 3)²."},o:["x² + 6x + 9","x² + 9","x² + 3x + 9","x² + 6x + 6"],a:0},
+      {lv:1,sk:"al",q:{uz:"x² − 5x + 6 = 0 tenglamaning ildizlari:",ru:"Корни уравнения x² − 5x + 6 = 0:"},o:[{uz:"2 va 3",ru:"2 и 3"},{uz:"−2 va −3",ru:"−2 и −3"},{uz:"1 va 6",ru:"1 и 6"},{uz:"−1 va 6",ru:"−1 и 6"}],a:0},
+      {lv:1,sk:"al",q:{uz:"x + y = 10 va x − y = 4 sistemaning yechimi:",ru:"Решение системы x + y = 10 и x − y = 4:"},o:["x = 7, y = 3","x = 6, y = 4","x = 3, y = 7","x = 8, y = 2"],a:0},
+      {lv:1,sk:"al",q:{uz:"(a − b)(a + b) ifoda nimaga teng?",ru:"Чему равно выражение (a − b)(a + b)?"},o:["a² − b²","a² + b²","a² − 2ab + b²","(a − b)²"],a:0},
+      {lv:1,sk:"al",q:{uz:"3x − 7 > 8 tengsizlikni yeching.",ru:"Решите неравенство 3x − 7 > 8."},o:["x > 5","x < 5","x > 1/3","x > 15"],a:0},
+      {lv:1,sk:"al",q:{uz:"x² = 49 tenglamaning ildizlari:",ru:"Корни уравнения x² = 49:"},o:[{uz:"7 va −7",ru:"7 и −7"},{uz:"faqat 7",ru:"только 7"},{uz:"49 va −49",ru:"49 и −49"},{uz:"faqat −7",ru:"только −7"}],a:0},
+      {lv:1,sk:"ar",q:{uz:"√50 ni soddalashtiring.",ru:"Упростите √50."},o:["5√2","25√2","2√5","10√5"],a:0},
       {lv:1,sk:"ar",q:"2³ · 2⁴ = ?",o:["128","64","2¹²","256"],a:0},
-      {lv:1,sk:"al",q:"x + y = 10 va x − y = 4 sistemaning yechimi:",o:["x = 7, y = 3","x = 6, y = 4","x = 3, y = 7","x = 8, y = 2"],a:0},
-      {lv:1,sk:"ge",q:"To‘g‘ri burchakli uchburchakning katetlari 6 va 8. Gipotenuza qancha?",o:["10","14","12","48"],a:0},
-      {lv:1,sk:"ge",q:"Radiusi 5 ga teng doiraning yuzi:",o:["25π","10π","5π","50π"],a:0},
-      {lv:1,sk:"lo",q:"(0; 2) nuqtadan o‘tuvchi va burchak koeffitsienti 3 bo‘lgan to‘g‘ri chiziq tenglamasi:",o:["y = 3x + 2","y = 2x + 3","y = 3x − 2","y = x + 3"],a:0},
-      {lv:1,sk:"lo",q:"O‘yin kubigi bir marta tashlandi. Juft son tushish ehtimoli:",o:["1/2","1/3","1/6","2/3"],a:0},
-      // ---- III: 10–11-sinf, abituriyent ----
+      {lv:1,sk:"ar",q:"(3²)³ = ?",o:["3⁶","3⁵","3⁹","9⁵"],a:0},
+      {lv:1,sk:"ar",q:{uz:"1,2 · 10⁻³ sonini o‘nli kasr ko‘rinishida yozing.",ru:"Запишите число 1,2 · 10⁻³ в виде десятичной дроби."},o:["0,0012","0,012","0,00012","1200"],a:0},
+      {lv:1,sk:"ge",q:{uz:"To‘g‘ri burchakli uchburchakning katetlari 6 va 8. Gipotenuza qancha?",ru:"Катеты прямоугольного треугольника равны 6 и 8. Чему равна гипотенуза?"},o:["10","14","12","48"],a:0},
+      {lv:1,sk:"ge",q:{uz:"Radiusi 5 ga teng doiraning yuzi:",ru:"Площадь круга радиусом 5:"},o:["25π","10π","5π","50π"],a:0},
+      {lv:1,sk:"ge",q:{uz:"Parallelogrammning asosi 10, balandligi 6. Uning yuzi qancha?",ru:"Основание параллелограмма 10, высота 6. Чему равна его площадь?"},o:["60","30","16","32"],a:0},
+      {lv:1,sk:"ge",q:{uz:"Muntazam oltiburchakning har bir ichki burchagi necha gradus?",ru:"Чему равен каждый внутренний угол правильного шестиугольника?"},o:["120°","108°","135°","60°"],a:0},
+      {lv:1,sk:"ge",q:{uz:"Aylananing radiusi 4. Aylana uzunligi qancha?",ru:"Радиус окружности 4. Чему равна длина окружности?"},o:["8π","16π","4π","2π"],a:0},
+      {lv:1,sk:"lo",q:{uz:"(0; 2) nuqtadan o‘tuvchi va burchak koeffitsienti 3 bo‘lgan to‘g‘ri chiziq tenglamasi:",ru:"Уравнение прямой, проходящей через точку (0; 2), с угловым коэффициентом 3:"},o:["y = 3x + 2","y = 2x + 3","y = 3x − 2","y = x + 3"],a:0},
+      {lv:1,sk:"lo",q:{uz:"O‘yin kubigi bir marta tashlandi. Juft son tushish ehtimoli:",ru:"Игральный кубик бросили один раз. Вероятность выпадения чётного числа:"},o:["1/2","1/3","1/6","2/3"],a:0},
+      {lv:1,sk:"lo",q:{uz:"f(x) = 2x − 3 bo‘lsa, f(5) nechaga teng?",ru:"f(x) = 2x − 3. Найдите f(5)."},o:["7","13","10","2"],a:0},
+      {lv:1,sk:"lo",q:{uz:"Sinfda 12 o‘g‘il va 18 qiz bor. Tasodifiy tanlangan o‘quvchining qiz bo‘lish ehtimoli:",ru:"В классе 12 мальчиков и 18 девочек. Вероятность того, что случайно выбранный ученик — девочка:"},o:["3/5","2/5","2/3","1/2"],a:0},
+      {lv:1,sk:"lo",q:{uz:"5, 8, 12, 15, 20 sonlarining o‘rta arifmetigi:",ru:"Среднее арифметическое чисел 5, 8, 12, 15, 20:"},o:["12","15","11","10"],a:0},
+
+      // ---------------- III: 10–11-sinf, abituriyent (20) ----------------
       {lv:2,sk:"al",q:"log₂ 32 = ?",o:["5","4","6","16"],a:0},
-      {lv:2,sk:"al",q:"2ˣ⁺¹ = 16 tenglamani yeching.",o:["x = 3","x = 4","x = 7","x = 2"],a:0},
-      {lv:2,sk:"al",q:"|2x − 1| = 5 tenglamaning yechimlari:",o:["x = 3 yoki x = −2","x = 3","x = −3 yoki x = 2","x = 2,5"],a:0},
+      {lv:2,sk:"al",q:"lg 1000 = ?",o:["3","2","100","30"],a:0},
+      {lv:2,sk:"al",q:{uz:"log₃ x = 4 bo‘lsa, x nechaga teng?",ru:"Если log₃ x = 4, то x равен:"},o:["81","12","64","7"],a:0},
+      {lv:2,sk:"al",q:{uz:"2ˣ⁺¹ = 16 tenglamani yeching.",ru:"Решите уравнение 2ˣ⁺¹ = 16."},o:["x = 3","x = 4","x = 7","x = 2"],a:0},
+      {lv:2,sk:"al",q:{uz:"|2x − 1| = 5 tenglamaning yechimlari:",ru:"Решения уравнения |2x − 1| = 5:"},o:[{uz:"x = 3 yoki x = −2",ru:"x = 3 или x = −2"},{uz:"faqat x = 3",ru:"только x = 3"},{uz:"x = −3 yoki x = 2",ru:"x = −3 или x = 2"},"x = 2,5"],a:0},
+      {lv:2,sk:"al",q:{uz:"√(x + 5) = 3 tenglamani yeching.",ru:"Решите уравнение √(x + 5) = 3."},o:["x = 4","x = −2","x = 14","x = 9"],a:0},
+      {lv:2,sk:"al",q:{uz:"x² − 9 < 0 tengsizlikning yechimi:",ru:"Решение неравенства x² − 9 < 0:"},o:["−3 < x < 3","x > 3",{uz:"x < −3 yoki x > 3",ru:"x < −3 или x > 3"},"x < 9"],a:0},
       {lv:2,sk:"ge",q:"sin 30° + cos 60° = ?",o:["1","1/2","√3","√3/2"],a:0},
-      {lv:2,sk:"lo",q:"f(x) = x³ − 4x funksiyaning hosilasi:",o:["3x² − 4","3x² − 4x","x² − 4","3x³ − 4"],a:0},
+      {lv:2,sk:"ge",q:"sin² α + cos² α = ?",o:["1","0","2","sin 2α"],a:0},
+      {lv:2,sk:"ge",q:"tg 45° = ?",o:["1","0","√3","√2/2"],a:0},
+      {lv:2,sk:"ge",q:"2 sin 15° · cos 15° = ?",o:["1/2","1","√3/2","√2/2"],a:0},
+      {lv:2,sk:"ge",q:{uz:"Sharning radiusi 3. Uning hajmi qancha?",ru:"Радиус шара 3. Чему равен его объём?"},o:["36π","12π","27π","108π"],a:0},
+      {lv:2,sk:"lo",q:{uz:"f(x) = x³ − 4x funksiyaning hosilasi:",ru:"Производная функции f(x) = x³ − 4x:"},o:["3x² − 4","3x² − 4x","x² − 4","3x³ − 4"],a:0},
+      {lv:2,sk:"lo",q:{uz:"f(x) = sin x funksiyaning hosilasi:",ru:"Производная функции f(x) = sin x:"},o:["cos x","−cos x","−sin x","tg x"],a:0},
       {lv:2,sk:"lo",q:"∫₀² 3x² dx = ?",o:["8","12","6","4"],a:0},
-      {lv:2,sk:"ar",q:"Arifmetik progressiyada a₁ = 3, d = 4. a₁₀ = ?",o:["39","43","40","36"],a:0},
-      {lv:2,sk:"ar",q:"Geometrik progressiyada b₁ = 2, q = 3. Dastlabki 4 ta hadning yig‘indisi:",o:["80","54","162","26"],a:0},
-      {lv:2,sk:"al",q:"x² − 9 < 0 tengsizlikning yechimi:",o:["−3 < x < 3","x > 3","x < −3 yoki x > 3","x < 9"],a:0},
+      {lv:2,sk:"lo",q:{uz:"f(x) = x² − 6x + 5 funksiyaning eng kichik qiymati:",ru:"Наименьшее значение функции f(x) = x² − 6x + 5:"},o:["−4","5","3","−9"],a:0},
+      {lv:2,sk:"lo",q:"lim (x→2) (x² − 4)/(x − 2) = ?",o:["4","0","2",{uz:"mavjud emas",ru:"не существует"}],a:0},
+      {lv:2,sk:"ar",q:{uz:"Arifmetik progressiyada a₁ = 3, d = 4. a₁₀ = ?",ru:"В арифметической прогрессии a₁ = 3, d = 4. a₁₀ = ?"},o:["39","43","40","36"],a:0},
+      {lv:2,sk:"ar",q:{uz:"Geometrik progressiyada b₁ = 2, q = 3. Dastlabki 4 ta hadning yig‘indisi:",ru:"В геометрической прогрессии b₁ = 2, q = 3. Сумма первых 4 членов:"},o:["80","54","162","26"],a:0},
+      {lv:2,sk:"ar",q:{uz:"5 ta elementdan 2 tadan nechta guruhlash (C₅²) tuzish mumkin?",ru:"Сколько сочетаний из 5 элементов по 2 (C₅²)?"},o:["10","20","25","7"],a:0},
     ],
   },
 };
 
+
 /* =====================================================================
-   3) MANTIQ
+   3) MATNLAR (o‘zbekcha / ruscha)
+   ===================================================================== */
+const I18N = {
+  uz: {
+    crumb:"Bepul daraja testi", kicker:"Bepul daraja testi",
+    h1:"Darajangizni <span>aniqlang</span>, keyin o‘qishni boshlang",
+    heroP:"Xalqaro shkala asosidagi qisqa test. Savollar javoblaringizga qarab qiyinlashadi yoki osonlashadi va har safar bazadan yangicha tanlanadi.",
+    chooseBtn:"Fanni tanlash", fact1:"savollar bazasi", fact2:"daraja (CEFR)", fact3:"natija hisoboti",
+    ladderHint:"Darajalar ustiga bosing — har biri nimani anglatishini ko‘ring.",
+    subjTitle:"Qaysi fandan test topshirasiz?", subjSub:"Bittasini tanlang. Tugatgach, boshqasini ham topshirishingiz mumkin.",
+    soon:"Tez orada:", soon1:"Rus tili", soon2:"Koreys tili (TOPIK)", soon3:"Xitoy tili (HSK)",
+    howTitle:"Qanday ishlaydi", howSub:"To‘rt qadam — va siz qaysi guruhdan boshlashni bilasiz.",
+    st1h:"Fanni tanlang", st1p:"Ingliz tili, rus tili yoki matematika.",
+    st2h:"Savollarga javob bering", st2p:"Bilmasangiz, “Bilmayman”ni bosing — taxmin qilmang.",
+    st3h:"Darajangizni oling", st3p:"Natija ekranda chiqadi va PDF bo‘lib yuklanadi.",
+    st4h:"Guruhga yoziling", st4p:"Mutaxassisimiz siz bilan bog‘lanib, mos guruhni taklif qiladi.",
+    honestT:"Ochiq gapiramiz", honestP:"Bu test rasmiy sertifikat emas. U grammatika, lug‘at va o‘qib tushunish (matematikada — masala yechish) bo‘yicha taxminiy darajani ko‘rsatadi. Gapirish va yozish ko‘nikmasini o‘qituvchi bilan bepul suhbatda aniqlaymiz.",
+    qCount:"Savol {n} / {t}", back:"← Fanlar", skip:"Bilmayman",
+    hint:"<kbd>1</kbd>–<kbd>4</kbd> — javob, <kbd>S</kbd> — bilmayman",
+    leave:"Yana bir marta bossangiz, test bekor qilinadi",
+    questions:"savol", minutes:"daqiqa", start:"Boshlash", retake:"Qayta topshirish", taken:"✓ Topshirilgan",
+    ready:"✓ Test yakunlandi", leadH:"Darajangiz aniqlandi",
+    leadP:"Natijani ko‘rish va PDF hisobotni olish uchun ma’lumotlaringizni qoldiring. Mutaxassisimiz sizga mos guruh haqida ma’lumot beradi.",
+    blurNote:"Natija ism va telefon raqamingizni kiritgandan keyin ochiladi",
+    fName:"Ism va familiya", namePh:"Masalan: Aziz Karimov", eName:"Ismingizni kiriting",
+    fPhone:"Telefon raqam", ePhone:"9 ta raqamni kiriting", fWho:"Siz kimsiz?", fTg:"Telegram username (ixtiyoriy)",
+    who:["Tanlang","5–8-sinf o‘quvchisi","9–11-sinf o‘quvchisi","Abituriyent","Talaba","Ishlayman","Ota-ona (farzandim uchun)"],
+    submit:"Natijani ko‘rish va PDF olish", sending:"Yuborilmoqda...",
+    lvlCefr:"CEFR daraja", lvl:"Daraja", fitGroup:"sizga mos guruh", groupSuffix:" guruhi", ielts:"Taxminiy IELTS: ",
+    bySkill:"Bo‘limlar bo‘yicha", canTitle:"Bu darajada siz…",
+    stats:"Jami: {ok} / {t} to‘g‘ri · {m} daq {s} son. Savollar darajangizga moslashgani uchun foiz emas, daraja muhim.",
+    nextEn:"Keyingi qadam: bepul speaking tekshiruvi", nextMath:"Keyingi qadam: bepul sinov darsi",
+    nextPEn:"Test gapirish va yozishni o‘lchamaydi. O‘qituvchimiz bilan 10 daqiqalik suhbatda darajangizni tasdiqlab, ",
+    nextPMath:"O‘qituvchimiz bilan qisqa suhbatda darajangizni tasdiqlab, ",
+    nextPEnd:"“{g}” bo‘yicha jadval va narxni aytamiz. Mutaxassisimiz 1 ish kuni ichida bog‘lanadi.",
+    tgBtn:"Telegramda yozish", disc:"Natija taxminiy va rasmiy sertifikat emas. U test javoblaringiz asosida hisoblandi. Aniq darajani o‘qituvchi bilan suhbatda tasdiqlaymiz.",
+    pdfBtn:"PDF hisobotni yuklab olish", again:"Qayta topshirish", moreT:"Boshqa fandan ham test topshiring",
+    foot:"© Registon o‘quv markazi", tel:"Tel", pdfOk:"PDF yuklab olindi", pdfErr:"PDF yaratib bo‘lmadi. Qayta urinib ko‘ring.",
+    testOf:"daraja testi",
+    pdf:{ report:"Natija hisoboti", taker:"Test topshiruvchi", lvlCefr:"CEFR DARAJA", lvl:"DARAJA", fit:"SIZGA MOS GURUH",
+      bySkill:"Bo‘limlar bo‘yicha", can:"Bu darajada siz…", total:"Jami: {ok} / {t} to‘g‘ri. Savollar darajangizga moslashgani uchun foiz emas, yakuniy daraja muhim.",
+      goal:"KEYINGI MAQSAD", goalP:"Bu darajada siz: ", noteEn:"Test gapirish va yozishni o‘lchamaydi. ",
+      nextBody:"O‘qituvchimiz bilan qisqa suhbatda darajangizni tasdiqlab, mos guruh jadvali va narxini aytamiz.",
+      discA:"Natija taxminiy va rasmiy sertifikat emas. U test javoblaringiz asosida hisoblandi (", discB:"). Aniq darajani o‘qituvchi bilan suhbatda tasdiqlaymiz.",
+      areasEn:"grammatika, lug‘at, o‘qib tushunish", areasMath:"arifmetika, algebra, geometriya, mantiq",
+      contact:"Bog‘lanish:", center:"Registon o‘quv markazi" },
+  },
+  ru: {
+    crumb:"Бесплатный тест уровня", kicker:"Бесплатный тест уровня",
+    h1:"<span>Узнайте</span> свой уровень, а потом начинайте учиться",
+    heroP:"Короткий тест по международной шкале. Вопросы усложняются или упрощаются по вашим ответам и каждый раз заново выбираются из базы.",
+    chooseBtn:"Выбрать предмет", fact1:"вопросов в базе", fact2:"уровней (CEFR)", fact3:"отчёт о результате",
+    ladderHint:"Нажмите на уровень — узнаете, что он означает.",
+    subjTitle:"По какому предмету пройдёте тест?", subjSub:"Выберите один. После него можно пройти и другие.",
+    soon:"Скоро:", soon1:"Русский язык", soon2:"Корейский (TOPIK)", soon3:"Китайский (HSK)",
+    howTitle:"Как это работает", howSub:"Четыре шага — и вы знаете, с какой группы начать.",
+    st1h:"Выберите предмет", st1p:"Английский, русский язык или математика.",
+    st2h:"Ответьте на вопросы", st2p:"Если не знаете — нажмите «Не знаю», не угадывайте.",
+    st3h:"Получите уровень", st3p:"Результат появится на экране и скачается в PDF.",
+    st4h:"Запишитесь в группу", st4p:"Наш специалист свяжется с вами и предложит подходящую группу.",
+    honestT:"Говорим честно", honestP:"Это не официальный сертификат. Тест показывает примерный уровень по грамматике, лексике и чтению (в математике — по решению задач). Говорение и письмо проверим на бесплатной беседе с преподавателем.",
+    qCount:"Вопрос {n} / {t}", back:"← Предметы", skip:"Не знаю",
+    hint:"<kbd>1</kbd>–<kbd>4</kbd> — ответ, <kbd>S</kbd> — не знаю",
+    leave:"Нажмите ещё раз — и тест будет отменён",
+    questions:"вопросов", minutes:"мин", start:"Начать", retake:"Пройти снова", taken:"✓ Пройден",
+    ready:"✓ Тест завершён", leadH:"Ваш уровень определён",
+    leadP:"Оставьте контакты, чтобы увидеть результат и получить PDF-отчёт. Наш специалист расскажет о подходящей группе.",
+    blurNote:"Результат откроется после ввода имени и телефона",
+    fName:"Имя и фамилия", namePh:"Например: Азиз Каримов", eName:"Введите имя",
+    fPhone:"Номер телефона", ePhone:"Введите 9 цифр", fWho:"Кто вы?", fTg:"Telegram username (необязательно)",
+    who:["Выберите","Ученик 5–8 класса","Ученик 9–11 класса","Абитуриент","Студент","Работаю","Родитель (для ребёнка)"],
+    submit:"Посмотреть результат и получить PDF", sending:"Отправляем...",
+    lvlCefr:"Уровень CEFR", lvl:"Уровень", fitGroup:"подходящая группа", groupSuffix:"", ielts:"Примерный IELTS: ",
+    bySkill:"По разделам", canTitle:"На этом уровне вы…",
+    stats:"Всего: {ok} / {t} верно · {m} мин {s} сек. Вопросы подстраивались под вас, поэтому важен уровень, а не процент.",
+    nextEn:"Следующий шаг: бесплатная проверка speaking", nextMath:"Следующий шаг: бесплатный пробный урок",
+    nextPEn:"Тест не измеряет говорение и письмо. На 10-минутной беседе преподаватель подтвердит ваш уровень, ",
+    nextPMath:"На короткой беседе преподаватель подтвердит ваш уровень, ",
+    nextPEnd:"и мы расскажем расписание и цену группы «{g}». Специалист свяжется в течение 1 рабочего дня.",
+    tgBtn:"Написать в Telegram", disc:"Результат примерный и не является официальным сертификатом. Он рассчитан по вашим ответам. Точный уровень подтвердим на беседе с преподавателем.",
+    pdfBtn:"Скачать PDF-отчёт", again:"Пройти снова", moreT:"Пройдите тест и по другому предмету",
+    foot:"© Учебный центр Registon", tel:"Тел", pdfOk:"PDF скачан", pdfErr:"Не удалось создать PDF. Попробуйте ещё раз.",
+    testOf:"тест уровня",
+    pdf:{ report:"Отчёт о результате", taker:"Участник теста", lvlCefr:"УРОВЕНЬ CEFR", lvl:"УРОВЕНЬ", fit:"ПОДХОДЯЩАЯ ГРУППА",
+      bySkill:"По разделам", can:"На этом уровне вы…", total:"Всего: {ok} / {t} верно. Вопросы подстраивались под ваш уровень, поэтому важен итоговый уровень, а не процент.",
+      goal:"СЛЕДУЮЩАЯ ЦЕЛЬ", goalP:"На этом уровне вы: ", noteEn:"Тест не измеряет говорение и письмо. ",
+      nextBody:"На короткой беседе преподаватель подтвердит ваш уровень, и мы расскажем расписание и цену подходящей группы.",
+      discA:"Результат примерный и не является официальным сертификатом. Он рассчитан по вашим ответам (", discB:"). Точный уровень подтвердим на беседе с преподавателем.",
+      areasEn:"грамматика, лексика, чтение", areasMath:"арифметика, алгебра, геометрия, логика",
+      contact:"Связь:", center:"Учебный центр Registon" },
+  },
+};
+
+/* =====================================================================
+   4) YORDAMCHI FUNKSIYALAR
    ===================================================================== */
 const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+let LANG = "uz";
+try { const u = new URLSearchParams(location.search).get("lang"); LANG = (u === "ru" || u === "uz") ? u : (localStorage.getItem("reg_lang") || "uz"); } catch(e){}
+if (!I18N[LANG]) LANG = "uz";
+const T = (k, v) => { let s = I18N[LANG][k] ?? I18N.uz[k] ?? k; if (v) for (const x in v) s = String(s).replace("{"+x+"}", v[x]); return s; };
+const L = x => (x && typeof x === "object" && !Array.isArray(x)) ? (x[LANG] ?? x.uz) : x;   // {uz,ru} → matn
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const state = { subj:null, theta:0, step:1, used:new Set(), log:[], cur:null, order:[], t0:0, timer:null, result:null, lead:null, done:{} };
 function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("on"),2600); }
-function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $("#s-"+id).classList.add("active"); window.scrollTo({top:0,behavior:"instant"}); }
-function setHash(h){ try{ history.replaceState(null,"",h ? "#"+h : location.pathname + location.search); }catch(e){} }
+function show(id){ $$(".screen").forEach(s=>s.classList.remove("active")); $("#s-"+id).classList.add("active"); window.scrollTo({top:0,behavior:"instant"}); }
+function setHash(h){ try{ history.replaceState(null,"",(h ? "#"+h : location.pathname) + (h ? "" : location.search)); }catch(e){} }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const isLang = S => S.type === "lang";
+function groupName(S, l){ return typeof l.group === "string" ? l.group + T("groupSuffix") : L(l.group); }
+function grpShort(S, l){ return typeof l.group === "string" ? l.group : L(l.group); }
+function underLabel(S, l){ return l.tag ? L(l.tag) : (typeof l.group === "string" ? l.group : L(l.ielts)); }
+function extraText(S, l){ return S.ieltsPrefix ? T("ielts") + l.ielts : L(l.ielts); }
 
-/* ---------- Bosh sahifa: interaktiv zinapoya ---------- */
-(function heroLadder(){
-  const L = SUBJECTS.english.levels;
-  $("#heroLadder").innerHTML = L.map((l,i)=>`<div class="st" data-i="${i}" style="height:${30+i*17}%"><b>${l.code}</b><small>${l.group}</small></div>`).join("");
-  $("#heroLadder").querySelectorAll(".st").forEach(st=>{
-    const f = () => { $("#heroLadder").querySelectorAll(".st").forEach(x=>x.classList.remove("on")); st.classList.add("on");
-      const l = L[+st.dataset.i]; $("#ladderInfo").innerHTML = `<b>${l.code} · ${l.group}</b> — ${esc(l.can[0])}.`; };
-    st.addEventListener("mouseenter", f); st.addEventListener("click", f);
-  });
-})();
+/* ---------- Tugmalarda "to‘lqin" effekti ---------- */
+document.addEventListener("pointerdown", e => {
+  const b = e.target.closest(".btn,.opt,.subj"); if (!b || reduce || b.disabled) return;
+  const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2.2, sp = document.createElement("span");
+  sp.className = "ripple"; sp.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s/2}px;top:${e.clientY - r.top - s/2}px`;
+  b.appendChild(sp); setTimeout(()=>sp.remove(), 650);
+});
+/* ---------- Header soyasi ---------- */
+addEventListener("scroll", () => $("#hdr").classList.toggle("scrolled", scrollY > 8), {passive:true});
+/* ---------- Ko‘rinishga kirganda paydo bo‘lish ---------- */
+const io = ("IntersectionObserver" in window) ? new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting){ en.target.classList.add("seen"); io.unobserve(en.target); } }), {threshold:.15}) : null;
+$$(".reveal").forEach((el,i) => { if (io && !reduce){ el.style.transitionDelay = (el.classList.contains("step") ? (i%4)*90 : 0) + "ms"; io.observe(el); } else el.classList.add("seen"); });
+/* ---------- Raqamlarni sanab chiqish ---------- */
+function countUp(el){ const end = +el.dataset.count, t0 = performance.now(), d = 1100;
+  (function f(t){ const p = Math.min(1,(t-t0)/d), e = 1-Math.pow(1-p,3); el.textContent = Math.round(end*e) + (p===1 && end>=100 ? "+" : ""); if (p<1) requestAnimationFrame(f); })(t0); }
+$$("[data-count]").forEach(el => reduce ? (el.textContent = el.dataset.count + (+el.dataset.count>=100?"+":"")) : setTimeout(()=>countUp(el), 300));
 
-/* ---------- Fan kartalari ---------- */
+/* =====================================================================
+   5) TIL ALMASHTIRISH
+   ===================================================================== */
+function moveThumb(){ const b = $(`#lang button[data-l="${LANG}"]`), th = $("#lang .thumb"); if (!b) return;
+  th.style.width = b.offsetWidth + "px"; th.style.transform = `translateX(${b.offsetLeft - 4}px)`;
+  $$("#lang button").forEach(x => x.classList.toggle("on", x === b)); }
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.title = LANG === "ru" ? "Тест уровня — Учебный центр Registon" : "Daraja testi — Registon o‘quv markazi";
+  $$("[data-t]").forEach(el => { const v = T(el.dataset.t); if (el.hasAttribute("data-html")) el.innerHTML = v; else el.textContent = v; });
+  $("#name").placeholder = T("namePh");
+  const cur = $("#who").selectedIndex; $("#who").innerHTML = T("who").map((w,i)=>`<option value="${i?esc(w):""}">${esc(w)}</option>`).join(""); $("#who").selectedIndex = Math.max(0,cur);
+  $("#qBack").textContent = T("back"); $("#qSkip").textContent = T("skip");
+  $$("#ltabs button").forEach(b => b.textContent = L(SUBJECTS[b.dataset.s].title));
+  $("#footContact").textContent = T("tel") + ": " + CONFIG.phone + " · Telegram: " + CONFIG.telegram;
+  $("#crumb").textContent = state.subj && !$("#s-home").classList.contains("active") ? L(SUBJECTS[state.subj].title) + " · " + T("testOf") : T("crumb");
+  renderLadder(); renderCards();
+  if ($("#s-quiz").classList.contains("active") && state.cur !== null){ $("#qSubj").textContent = L(SUBJECTS[state.subj].title); paintItem(false); }
+  if ($("#s-result").classList.contains("active")) renderResult(true);
+  moveThumb();
+}
+$$("#lang button").forEach(b => b.onclick = () => { if (LANG === b.dataset.l) return; LANG = b.dataset.l; try{ localStorage.setItem("reg_lang", LANG); }catch(e){} applyLang(); });
+addEventListener("resize", moveThumb);
+
+/* =====================================================================
+   6) BOSH SAHIFA: interaktiv zinapoya va fan kartalari
+   ===================================================================== */
+let ladderSubj = "english", ladderAuto = null, ladderIdx = -1;
+function renderLadder(){
+  const S = SUBJECTS[ladderSubj], Ls = S.levels, n = Ls.length;
+  $("#heroLadder").innerHTML = Ls.map((l,i)=>`<div class="st" data-i="${i}" style="height:${(n===5?30:42)+i*(n===5?17:26)}%;animation-delay:${i*90}ms"><b>${l.code}</b><small>${esc(underLabel(S,l))}</small></div>`).join("");
+  $$("#heroLadder .st").forEach(st => { const f = () => { stopAuto(); pickLadder(+st.dataset.i); }; st.addEventListener("mouseenter", f); st.addEventListener("click", f); });
+  $$("#ltabs button").forEach(b => b.classList.toggle("on", b.dataset.s === ladderSubj));
+  if (ladderIdx >= n) ladderIdx = -1;
+  if (ladderIdx >= 0) pickLadder(ladderIdx); else $("#ladderInfo").textContent = T("ladderHint");
+}
+function pickLadder(i){ ladderIdx = i; const S = SUBJECTS[ladderSubj], l = S.levels[i];
+  $$("#heroLadder .st").forEach((x,k)=>x.classList.toggle("on", k===i));
+  $("#ladderInfo").innerHTML = `<b>${l.code} · ${esc(grpShort(S,l))}</b> — ${esc(L(l.can)[0])}.`; }
+function stopAuto(){ clearInterval(ladderAuto); ladderAuto = null; }
+$$("#ltabs button").forEach(b => b.onclick = () => { stopAuto(); ladderSubj = b.dataset.s; ladderIdx = 0; renderLadder(); });
+if (!reduce) setTimeout(() => { ladderAuto = setInterval(() => pickLadder((ladderIdx + 1) % SUBJECTS[ladderSubj].levels.length), 2400); }, 1400);
+$("#toSubjects").onclick = () => $("#fanlar").scrollIntoView({behavior:"smooth"});
+
 function cardHTML(key){
   const S = SUBJECTS[key];
   return `<button class="subj ${state.done[key]?"is-done":""}" data-subj="${key}">
-    <span class="done">✓ Topshirilgan</span>
+    <span class="done">${T("taken")}</span>
     <div class="ic">${S.short}</div>
-    <h3>${S.title}</h3>
-    <p>${S.card}</p>
-    <div class="chips">${S.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-    <div class="meta"><span>${S.count} savol · ${S.minutes} daqiqa</span><span class="go">${state.done[key]?"Qayta topshirish":"Boshlash"} →</span></div>
+    <h3>${esc(L(S.title))}</h3>
+    <p>${esc(L(S.card))}</p>
+    <div class="chips">${S.chips.map(c=>`<span class="chip">${esc(L(c))}</span>`).join("")}</div>
+    <div class="meta"><span>${S.count} ${T("questions")} · ${S.minutes} ${T("minutes")}</span><span class="go">${state.done[key]?T("retake"):T("start")} <span>→</span></span></div>
   </button>`;
 }
 function renderCards(){
   const keys = Object.keys(SUBJECTS);
   $("#subjCards").innerHTML = keys.map(cardHTML).join("");
   $("#moreCards").innerHTML = keys.filter(k=>k!==state.subj).map(cardHTML).join("");
-  document.querySelectorAll("[data-subj]").forEach(b=>b.onclick=()=>startTest(b.dataset.subj));
+  $$("[data-subj]").forEach(b => {
+    b.onclick = () => startTest(b.dataset.subj);
+    if (reduce) return;
+    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(), x = (e.clientX-r.left)/r.width, y = (e.clientY-r.top)/r.height;
+      b.style.setProperty("--mx", x*100+"%"); b.style.setProperty("--my", y*100+"%");
+      b.style.transform = `rotateX(${(.5-y)*6}deg) rotateY(${(x-.5)*8}deg) translateY(-4px)`; });
+    b.addEventListener("pointerleave", () => { b.style.transform = ""; });
+  });
 }
 
-/* ---------- Adaptiv test ----------
+/* =====================================================================
+   7) ADAPTIV TEST
    theta — taxminiy daraja (0 = eng past). To‘g‘ri javobdan keyin oshadi, xatodan keyin kamayadi.
-   Qadam asta-sekin kichrayadi, shunda daraja barqarorlashadi. */
+   Qadam asta-sekin kichrayadi, shunda daraja barqarorlashadi.
+   Har bir darajada 20 tadan savol bor, ular tasodifiy tanlanadi va variantlar aralashtiriladi.
+   ===================================================================== */
 function startTest(key){
   const S = SUBJECTS[key], n = S.levels.length;
+  stopAuto();
   Object.assign(state, { subj:key, theta:(n-1)/2, step:1, used:new Set(), log:[], cur:null, result:null });
-  $("#qSubj").textContent = S.title; $("#crumb").textContent = S.title + " · daraja testi";
+  $("#qSubj").textContent = L(S.title); $("#crumb").textContent = L(S.title) + " · " + T("testOf");
+  $("#qSegs").innerHTML = Array.from({length:S.count},()=>"<i></i>").join("");
   setHash(key);
   state.t0 = Date.now(); clearInterval(state.timer);
   state.timer = setInterval(()=>{ const s=Math.floor((Date.now()-state.t0)/1000); $("#qTimer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }, 1000);
@@ -568,142 +1072,168 @@ function startTest(key){
 function pickItem(){
   const S = SUBJECTS[state.subj], n = S.levels.length;
   const target = Math.max(0, Math.min(n-1, Math.round(state.theta)));
-  // avval maqsad darajadan, bo‘lmasa eng yaqin darajadan; bo‘limlarni aralashtirib turamiz
   const lastSk = state.log.length ? S.items[state.log[state.log.length-1].i].sk : null;
   for (let d = 0; d < n; d++){
-    for (const lv of [target-d, target+d]){
+    for (const lv of (d ? [target-d, target+d] : [target])){
       if (lv < 0 || lv >= n) continue;
       const pool = S.items.map((it,i)=>({it,i})).filter(x=>x.it.lv===lv && !state.used.has(x.i));
       if (pool.length){
-        const pref = pool.filter(x=>x.it.sk!==lastSk);
-        const pick = (pref.length ? pref : pool)[Math.floor(Math.random()*(pref.length ? pref.length : pool.length))];
-        return pick.i;
+        const pref = pool.filter(x=>x.it.sk!==lastSk), src = pref.length ? pref : pool;
+        return src[Math.floor(Math.random()*src.length)].i;
       }
     }
   }
   return null;
+}
+function paintItem(animate){
+  const S = SUBJECTS[state.subj], it = S.items[state.cur], done = state.log.length;
+  $$("#qSegs i").forEach((x,k)=>{ x.classList.toggle("done", k<done); x.classList.toggle("cur", k===done); });
+  $("#qCount").textContent = T("qCount", {n:done+1, t:S.count});
+  $("#qSkill").textContent = L(S.skills[it.sk]);
+  $("#qPassage").innerHTML = it.p ? `<div class="passage">${esc(L(it.p))}</div>` : "";
+  $("#qText").innerHTML = esc(L(it.q)).replace(/___/g, '<span class="blank"></span>');
+  $("#qOpts").innerHTML = state.order.map((k,pos)=>`<button class="opt" data-k="${k}" style="animation-delay:${animate?pos*55:0}ms"><span class="k">${pos+1}</span><span>${esc(L(it.o[k]))}</span></button>`).join("");
+  $$("#qOpts .opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k, b));
 }
 function nextItem(){
   const S = SUBJECTS[state.subj];
   if (state.log.length >= S.count){ finishTest(); return; }
   const i = pickItem(); if (i === null){ finishTest(); return; }
   state.used.add(i); state.cur = i;
-  const it = S.items[i];
-  state.order = shuffle(it.o.map((_,k)=>k));
-  $("#qBar").style.width = (state.log.length / S.count * 100) + "%";
-  $("#qCount").textContent = `Savol ${state.log.length+1} / ${S.count}`;
-  $("#qSkill").textContent = S.skills[it.sk];
-  $("#qPassage").innerHTML = it.p ? `<div class="passage">${esc(it.p)}</div>` : "";
-  $("#qText").innerHTML = esc(it.q).replace(/___/g, '<span class="blank"></span>');
-  $("#qOpts").innerHTML = state.order.map((k,pos)=>`<button class="opt" data-k="${k}" style="animation-delay:${pos*50}ms"><span class="k">${pos+1}</span>${esc(it.o[k])}</button>`).join("");
-  $("#qOpts").querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k, b));
-  $("#qBack").textContent = "← Fanlar";
+  state.order = shuffle(S.items[i].o.map((_,k)=>k));
+  const card = $("#qCard"); card.classList.remove("out"); paintItem(true);
+  card.classList.remove("in"); void card.offsetWidth; card.classList.add("in");
 }
 let locked = false;
 function answer(k, btn){
   const S = SUBJECTS[state.subj];
   if (locked || state.result || state.log.length >= S.count) return; locked = true;
   const it = S.items[state.cur], ok = k === it.a, n = S.levels.length;
-  if (btn){ $("#qOpts").querySelectorAll(".opt").forEach(o=>o.classList.remove("sel")); btn.classList.add("sel"); }
+  if (btn){ $$("#qOpts .opt").forEach(o=>o.classList.remove("sel")); btn.classList.add("sel"); }
   state.log.push({ i:state.cur, ok, k, theta:state.theta });
   state.theta = Math.max(0, Math.min(n-1, state.theta + (ok ? 1 : -1) * state.step));
   state.step = Math.max(0.3, state.step * 0.82);
-  setTimeout(()=>{ locked = false; nextItem(); }, btn ? 260 : 60);
+  setTimeout(()=>{ $("#qCard").classList.add("out"); }, btn ? 230 : 0);
+  setTimeout(()=>{ locked = false; nextItem(); }, btn ? 430 : 200);
 }
 $("#qSkip").onclick = () => answer(-1, null);
 $("#qBack").onclick = () => { if (confirmLeave()) goHome(); };
-function confirmLeave(){ return state.log.length < 3 || window.__leaveOk || (window.__leaveOk = true, toast("Yana bir marta bossangiz, test bekor qilinadi"), false); }
+function confirmLeave(){ return state.log.length < 3 || window.__leaveOk || (window.__leaveOk = true, toast(T("leave")), false); }
 document.addEventListener("keydown", e=>{
-  if (!$("#s-quiz").classList.contains("active")) return;
+  if (!$("#s-quiz").classList.contains("active") || e.target.closest("input,select,textarea")) return;
   const n = parseInt(e.key), btns = $("#qOpts").children;
   if (n >= 1 && n <= btns.length) btns[n-1].click();
+  if (e.key === "s" || e.key === "S" || e.key === "ы" || e.key === "Ы") $("#qSkip").click();
 });
 
 /* ---------- Natijani hisoblash ---------- */
 function scoreTest(){
   const S = SUBJECTS[state.subj], n = S.levels.length, log = state.log;
-  // yakuniy daraja: oxirgi javoblardagi theta o‘rtachasi + yakuniy theta
   const tail = log.slice(-6).map(x=>x.theta).concat([state.theta]);
   let lvl = Math.round(tail.reduce((a,b)=>a+b,0) / tail.length);
-  // tekshiruv: tanlangan darajada kamida yarmi to‘g‘ri bo‘lmasa, bir pog‘ona pastga
   const at = log.filter(x=>S.items[x.i].lv===lvl);
   if (lvl > 0 && at.length >= 2 && at.filter(x=>x.ok).length / at.length < 0.5) lvl--;
   lvl = Math.max(0, Math.min(n-1, lvl));
-  const skills = Object.entries(S.skills).map(([key,name])=>{
+  const skills = Object.keys(S.skills).map(key=>{
     const xs = log.filter(x=>S.items[x.i].sk===key);
-    return { key, name, total:xs.length, ok:xs.filter(x=>x.ok).length };
+    return { key, total:xs.length, ok:xs.filter(x=>x.ok).length };
   }).filter(s=>s.total>0);
-  const okCount = log.filter(x=>x.ok).length;
-  return { lvl, skills, okCount, total:log.length, secs:Math.round((Date.now()-state.t0)/1000) };
+  return { lvl, skills, okCount:log.filter(x=>x.ok).length, total:log.length, secs:Math.round((Date.now()-state.t0)/1000) };
 }
 function finishTest(){
   clearInterval(state.timer); window.__leaveOk = false;
   state.result = scoreTest();
-  $("#qOpts").querySelectorAll(".opt").forEach(o=>o.disabled = true);
-  $("#qBar").style.width = "100%";
+  $$("#qOpts .opt").forEach(o=>o.disabled = true);
+  $$("#qSegs i").forEach(x=>{ x.classList.add("done"); x.classList.remove("cur"); });
   $("#blurLevel").textContent = SUBJECTS[state.subj].levels[state.result.lvl].code;
-  setTimeout(()=>show("lead"), 250);
+  setTimeout(()=>show("lead"), 300);
 }
 
-/* ---------- Forma ---------- */
+/* =====================================================================
+   8) FORMA
+   ===================================================================== */
 const phoneEl = $("#phone");
 phoneEl.addEventListener("input", ()=>{ const d = phoneEl.value.replace(/\D/g,"").slice(0,9); phoneEl.value = [d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean).join(" "); });
 $("#leadForm").addEventListener("submit", async e=>{
   e.preventDefault();
   const name = $("#name").value.trim(), digits = phoneEl.value.replace(/\D/g,"");
+  ["#f-name","#f-phone"].forEach(f=>$(f).classList.remove("bad")); void $("#f-name").offsetWidth;
   $("#f-name").classList.toggle("bad", name.length<2);
   $("#f-phone").classList.toggle("bad", digits.length!==9);
   if (name.length<2 || digits.length!==9) return;
   if ($("#hp").value) return;
-  const S = SUBJECTS[state.subj], R = state.result, L = S.levels[R.lvl];
+  const S = SUBJECTS[state.subj], R = state.result, Lv = S.levels[R.lvl];
   state.lead = { name, phone:"+998"+digits, who:$("#who").value || "—", tg:$("#tg").value.trim() || "—" };
   const mm = Math.floor(R.secs/60), ss = String(R.secs%60).padStart(2,"0");
+  // Botga va jadvalga doim o‘zbekcha yoziladi (admin uchun)
   const payload = {
-    subject: S.title,
+    subject: S.title.uz,
     ...state.lead,
-    level: (S.scale === "CEFR" ? "CEFR " : "") + L.code + " — " + L.group,
-    extra: S.scale === "CEFR" ? "Taxminiy IELTS: " + L.ielts : L.ielts,
-    skills: R.skills.map(s=>s.name+": "+s.ok+"/"+s.total).join("\n"),
-    stats: "To‘g‘ri: " + R.okCount + "/" + R.total + " · Vaqt: " + mm + ":" + ss,
-    answers: state.log.map((x,i)=>{ const it=S.items[x.i]; return (i+1)+". ["+S.levels[it.lv].code+"] "+(x.ok?"✓":"✗")+" "+it.q.slice(0,60); }).join("\n"),
+    level: (isLang(S) ? "CEFR " : "") + Lv.code + " — " + (typeof Lv.group === "string" ? Lv.group : Lv.group.uz),
+    extra: S.ieltsPrefix ? "Taxminiy IELTS: " + Lv.ielts : Lv.ielts.uz,
+    skills: R.skills.map(s=>S.skills[s.key].uz+": "+s.ok+"/"+s.total).join("\n"),
+    stats: "To‘g‘ri: " + R.okCount + "/" + R.total + " · Vaqt: " + mm + ":" + ss + " · Til: " + LANG.toUpperCase(),
+    answers: state.log.map((x,i)=>{ const it=S.items[x.i]; return (i+1)+". ["+S.levels[it.lv].code+"] "+(x.ok?"✓":(x.k<0?"—":"✗"))+" "+String(it.q.uz||it.q).slice(0,60); }).join("\n"),
     page: location.href.split("#")[0],
   };
-  const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Yuborilmoqda...";
+  const btn = $("#submitBtn"), lbl = btn.querySelector("[data-t]"); btn.disabled = true; lbl.textContent = T("sending");
   try{ await fetch(CONFIG.endpoint,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}); }
   catch(err){ console.warn("Yuborishda xato:", err); }
-  btn.disabled = false; btn.textContent = "Natijani ko‘rish va PDF olish";
+  btn.disabled = false; lbl.textContent = T("submit");
   state.done[state.subj] = true;
-  renderResult(); show("result");
-  setTimeout(downloadPDF, 700);
+  renderResult(); show("result"); confetti();
+  setTimeout(downloadPDF, 900);
 });
 
-/* ---------- Natija ekrani ---------- */
-function renderResult(){
-  const S = SUBJECTS[state.subj], R = state.result, L = S.levels[R.lvl];
-  $("#rLvlLabel").textContent = S.scale === "CEFR" ? "CEFR daraja" : "Daraja";
-  $("#rLvl").textContent = L.code;
-  $("#rSubj").textContent = S.title + " · sizga mos guruh";
-  $("#rGroup").textContent = S.scale === "CEFR" ? L.group + " guruhi" : L.group;
-  $("#rDesc").textContent = L.desc;
-  $("#rIelts").textContent = S.scale === "CEFR" ? "Taxminiy IELTS: " + L.ielts : L.ielts;
-  $("#rLadder").innerHTML = S.levels.map((l,i)=>`<div class="${i===R.lvl?"on":(i<R.lvl?"below":"")}">${l.code}<small>${S.scale==="CEFR"?l.group:l.ielts}</small></div>`).join("");
-  $("#rSkills").innerHTML = R.skills.map(s=>`<div class="sk"><div class="row"><span>${s.name}</span><span>${s.ok} / ${s.total}</span></div><div class="tr"><i data-w="${Math.round(s.ok/s.total*100)}"></i></div></div>`).join("");
-  $("#rStats").textContent = `Jami: ${R.okCount} / ${R.total} to‘g‘ri · ${Math.floor(R.secs/60)} daq ${R.secs%60} son. Savollar darajangizga moslashgani uchun foiz emas, daraja muhim.`;
-  $("#rCanTitle").textContent = "Bu darajada siz…";
-  $("#rCan").innerHTML = L.can.map(c=>`<li>${esc(c)}</li>`).join("");
-  $("#rNextT").textContent = S.scale === "CEFR" ? "Keyingi qadam: bepul speaking tekshiruvi" : "Keyingi qadam: bepul sinov darsi";
-  $("#rNextP").textContent = (S.scale === "CEFR"
-    ? "Test gapirish va yozishni o‘lchamaydi. O‘qituvchimiz bilan 10 daqiqalik suhbatda darajangizni tasdiqlab, "
-    : "O‘qituvchimiz bilan qisqa suhbatda darajangizni tasdiqlab, ") + "“" + (S.scale==="CEFR" ? L.group + " guruhi" : L.group) + "” bo‘yicha jadval va narxni aytamiz. Mutaxassisimiz 1 ish kuni ichida bog‘lanadi.";
+/* =====================================================================
+   9) NATIJA EKRANI
+   ===================================================================== */
+function renderResult(quiet){
+  const S = SUBJECTS[state.subj], R = state.result, Lv = S.levels[R.lvl], isEn = isLang(S);
+  $("#rLvlLabel").textContent = isEn ? T("lvlCefr") : T("lvl");
+  const lv = $("#rLvl"); lv.textContent = Lv.code; if (!quiet){ lv.classList.remove("roll"); void lv.offsetWidth; lv.classList.add("roll"); }
+  $("#rSubj").textContent = L(S.title) + " · " + T("fitGroup");
+  $("#rGroup").textContent = groupName(S, Lv);
+  $("#rDesc").textContent = L(Lv.desc);
+  $("#rIelts").textContent = extraText(S, Lv);
+  $("#rLadder").innerHTML = S.levels.map((l,i)=>`<div class="${i===R.lvl?"on":(i<R.lvl?"below":"")}" style="animation-delay:${quiet?0:300+i*80}ms">${l.code}<small>${esc(underLabel(S,l))}</small></div>`).join("");
+  $("#rSkills").innerHTML = R.skills.map(s=>`<div class="sk"><div class="row"><span>${esc(L(S.skills[s.key]))}</span><span>${s.ok} / ${s.total}</span></div><div class="tr"><i data-w="${Math.round(s.ok/s.total*100)}" ${quiet?`style="width:${Math.round(s.ok/s.total*100)}%"`:""}></i></div></div>`).join("");
+  $("#rStats").textContent = T("stats", {ok:R.okCount, t:R.total, m:Math.floor(R.secs/60), s:R.secs%60});
+  $("#rCan").innerHTML = L(Lv.can).map(c=>`<li>${esc(c)}</li>`).join("");
+  $("#rNextT").textContent = isEn ? T("nextEn") : T("nextMath");
+  $("#rNextP").textContent = (isEn ? T("nextPEn") : T("nextPMath")) + T("nextPEnd", {g:groupName(S, Lv)});
   $("#tgLink").href = "https://t.me/" + CONFIG.telegram.replace(/^@/,"");
   renderCards();
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll("#rSkills i").forEach(i=>i.style.width=i.dataset.w+"%"),80));
+  if (!quiet) requestAnimationFrame(()=>setTimeout(()=>$$("#rSkills i").forEach(i=>i.style.width=i.dataset.w+"%"),120));
 }
 $("#againBtn").onclick = () => startTest(state.subj);
-$("#footContact").textContent = "Tel: " + CONFIG.phone + " · Telegram: " + CONFIG.telegram;
 
-/* ---------- PDF (vektor matn, Helvetica — Registon brend shrifti) ---------- */
-// Logo PDF'ga vektor sifatida chiziladi (rasm emas) — har qanday kattalikda tiniq
+/* ---------- Konfetti (brend ranglarida) ---------- */
+function confetti(){
+  if (reduce) return;
+  const c = $("#confetti"), x = c.getContext("2d"), W = c.width = innerWidth, H = c.height = innerHeight;
+  const cols = ["#E75225","#EC703E","#F8C1A4","#1D1D1B","#FCDECC"];
+  const ps = Array.from({length:140}, () => ({ x:W/2 + (Math.random()-.5)*W*.3, y:H*.35, vx:(Math.random()-.5)*14, vy:-Math.random()*13-4, r:Math.random()*6+4, c:cols[Math.random()*cols.length|0], a:Math.random()*6, va:(Math.random()-.5)*.3 }));
+  const t0 = performance.now();
+  (function f(t){ x.clearRect(0,0,W,H); const age = (t-t0)/1000;
+    ps.forEach(p=>{ p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.globalAlpha = Math.max(0, 1 - age/2.6); x.fillStyle = p.c; x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); x.restore(); });
+    if (age < 2.6) requestAnimationFrame(f); else x.clearRect(0,0,W,H);
+  })(t0);
+}
+
+/* =====================================================================
+   10) PDF — vektor matn va logo. Shrift: PT Sans (lotin + kirill)
+   ===================================================================== */
+const PDF_FONT_URL = "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/ptsans/";
+let pdfFonts = null;
+async function loadPdfFonts(){
+  if (pdfFonts) return pdfFonts;
+  const get = async f => { const r = await fetch(PDF_FONT_URL + f); if (!r.ok) throw new Error(f); const b = new Uint8Array(await r.arrayBuffer());
+    let s = ""; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); };
+  const [reg, bold] = await Promise.all([get("PT_Sans-Web-Regular.ttf"), get("PT_Sans-Web-Bold.ttf")]);
+  pdfFonts = { reg, bold }; return pdfFonts;
+}
 function svgPathOps(d, ox, oy, k){
   const t = d.match(/[a-zA-Z]|-?\d*\.?\d+/g), ops = []; let i = 0, cmd = "", x = 0, y = 0, sx = 0, sy = 0;
   const num = () => parseFloat(t[i++]), P = (px, py) => [ox + px*k, oy + py*k];
@@ -729,129 +1259,134 @@ function drawLogo(doc, x, y, w){
     doc.path(svgPathOps(p.getAttribute("d"), x, y, k)); doc.fill();
   });
 }
-function buildPDF(){
-  const S = SUBJECTS[state.subj], R = state.result, L = S.levels[R.lvl], isEn = S.scale === "CEFR";
+function buildPDF(fonts){
+  const S = SUBJECTS[state.subj], R = state.result, Lv = S.levels[R.lvl], isEn = isLang(S), P = I18N[LANG].pdf;
   const doc = new jspdf.jsPDF({ unit:"mm", format:"a4", compress:true });
+  let FAM = "helvetica";
+  if (fonts){ doc.addFileToVFS("PTSans-Regular.ttf", fonts.reg); doc.addFont("PTSans-Regular.ttf", "PTSans", "normal");
+              doc.addFileToVFS("PTSans-Bold.ttf", fonts.bold); doc.addFont("PTSans-Bold.ttf", "PTSans", "bold"); FAM = "PTSans"; }
   const W = 210, M = 18, CW = W - M*2;
   const rgb = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
   const C = { or:"#E75225", or50:"#FCDECC", or25:"#FEF2EB", or700:"#B83A0E", bk:"#1D1D1B", g6:"#5C5C58", g2:"#E3E2DF", g1:"#F6F5F3", wh:"#FFFFFF" };
   const fill = c => doc.setFillColor(...rgb(c)), color = c => doc.setTextColor(...rgb(c)), stroke = c => doc.setDrawColor(...rgb(c));
-  const F = (b) => doc.setFont("helvetica", b ? "bold" : "normal");
+  const F = b => doc.setFont(FAM, b ? "bold" : "normal");
   const LH = pt => pt * 0.3528 * 1.4;
   const d = new Date(), p2 = n => String(n).padStart(2,"0");
+  const title = L(S.title), grp = groupName(S, Lv);
 
-  // Sarlavha
   try { drawLogo(doc, M, 13.5, 52); } catch(e){ console.warn("Logo chizilmadi", e); }
-  color(C.bk); F(true); doc.setFontSize(11); doc.text(S.title + " · daraja testi", W-M, 19, { align:"right" });
-  color(C.g6); F(false); doc.setFontSize(9); doc.text("Natija hisoboti · " + p2(d.getDate())+"."+p2(d.getMonth()+1)+"."+d.getFullYear(), W-M, 24.5, { align:"right" });
+  color(C.bk); F(true); doc.setFontSize(11); doc.text(title + " · " + T("testOf"), W-M, 19, { align:"right" });
+  color(C.g6); F(false); doc.setFontSize(9); doc.text(P.report + " · " + p2(d.getDate())+"."+p2(d.getMonth()+1)+"."+d.getFullYear(), W-M, 24.5, { align:"right" });
   fill(C.or); doc.rect(M, 33, CW, 1.2, "F");
 
   let y = 46;
-  color(C.g6); F(false); doc.setFontSize(9); doc.text("Test topshiruvchi", M, y);
+  color(C.g6); F(false); doc.setFontSize(9); doc.text(P.taker, M, y);
   color(C.bk); F(true); let ns = 24; doc.setFontSize(ns); while (doc.getTextWidth(state.lead.name) > CW && ns > 12){ ns--; doc.setFontSize(ns); } doc.text(state.lead.name, M, y+9.5);
   y += 17;
 
-  // Asosiy natija bloki (qora rang yo‘q: to‘q sariq + och fon)
-  const H = 40, lw = 56;
+  const H = 43, lw = 56;
   fill(C.or); doc.rect(M, y, lw, H, "F");
   fill(C.or25); doc.rect(M+lw, y, CW-lw, H, "F");
-  color(C.wh); F(true); doc.setFontSize(8.5); doc.text(isEn ? "CEFR DARAJA" : "DARAJA", M+8, y+10);
-  doc.setFontSize(isEn ? 46 : 40); doc.text(L.code, M+8, y+31);
+  color(C.wh); F(true); doc.setFontSize(8.5); doc.text(isEn ? P.lvlCefr : P.lvl, M+8, y+10);
+  doc.setFontSize(isEn ? 46 : 40); doc.text(Lv.code, M+8, y+31);
   const ix = M + lw + 9;
-  color(C.or700); F(true); doc.setFontSize(8.5); doc.text("SIZGA MOS GURUH", ix, y+10);
-  color(C.bk); F(true); doc.setFontSize(19); doc.text(isEn ? L.group + " guruhi" : L.group, ix, y+19);
-  color(C.g6); F(false); doc.setFontSize(9.2);
-  const dl = doc.splitTextToSize(L.desc, CW - lw - 18).slice(0,2); doc.text(dl, ix, y+26);
-  color(C.or700); F(true); doc.setFontSize(8.8); doc.text(isEn ? "Taxminiy IELTS: " + L.ielts : L.ielts, ix, y+36);
+  color(C.or700); F(true); doc.setFontSize(8.5); doc.text(P.fit, ix, y+10);
+  color(C.bk); F(true); let gs = 19; doc.setFontSize(gs); while (doc.getTextWidth(grp) > CW-lw-16 && gs > 12){ gs--; doc.setFontSize(gs); } doc.text(grp, ix, y+19);
+  color(C.g6); F(false); let dfs = 9.2; doc.setFontSize(dfs);
+  let dl = doc.splitTextToSize(L(Lv.desc), CW - lw - 18);
+  if (dl.length > 2){ dfs = 8.3; doc.setFontSize(dfs); dl = doc.splitTextToSize(L(Lv.desc), CW - lw - 18); }
+  doc.text(dl.slice(0,3), ix, y+25.5);
+  color(C.or700); F(true); doc.setFontSize(8.8); doc.text(extraText(S, Lv), ix, y+39);
   y += H + 7;
 
-  // Daraja zinapoyasi
   const n = S.levels.length, gap = 2.5, bw = (CW - gap*(n-1)) / n;
   S.levels.forEach((l,i)=>{
     const x = M + i*(bw+gap);
     fill(i===R.lvl ? C.or : (i<R.lvl ? C.or50 : C.g1)); doc.rect(x, y, bw, 13, "F");
     color(i===R.lvl ? C.wh : (i<R.lvl ? C.or700 : C.g6)); F(true); doc.setFontSize(11); doc.text(l.code, x+bw/2, y+6, { align:"center" });
-    F(false); doc.setFontSize(7.2); doc.text(isEn ? l.group : l.ielts, x+bw/2, y+10.5, { align:"center" });
+    F(false); doc.setFontSize(7.2); doc.text(underLabel(S, l), x+bw/2, y+10.5, { align:"center" });
   });
   y += 13 + 10;
 
-  // Bo‘limlar + "Bu darajada siz..."
   const colW = (CW - 8) / 2;
-  color(C.bk); F(true); doc.setFontSize(12); doc.text("Bo‘limlar bo‘yicha", M, y); doc.text("Bu darajada siz…", M+colW+8, y);
+  color(C.bk); F(true); doc.setFontSize(12); doc.text(P.bySkill, M, y); doc.text(P.can, M+colW+8, y);
   let ly = y + 8;
   R.skills.forEach(s=>{
-    color(C.bk); F(false); doc.setFontSize(9.8); doc.text(s.name, M, ly);
+    color(C.bk); F(false); doc.setFontSize(9.8); doc.text(L(S.skills[s.key]), M, ly);
     color(C.g6); doc.text(s.ok + " / " + s.total, M+colW, ly, { align:"right" });
     fill(C.g1); doc.roundedRect(M, ly+2, colW, 2.6, 1.3, 1.3, "F");
     if (s.ok) { fill(C.or); doc.roundedRect(M, ly+2, Math.max(colW*s.ok/s.total, 2.6), 2.6, 1.3, 1.3, "F"); }
     ly += 10;
   });
   color(C.g6); F(false); doc.setFontSize(8.2);
-  const st = doc.splitTextToSize("Jami: " + R.okCount + " / " + R.total + " to‘g‘ri. Savollar darajangizga moslashgani uchun foiz emas, yakuniy daraja muhim.", colW);
+  const st = doc.splitTextToSize(P.total.replace("{ok}",R.okCount).replace("{t}",R.total), colW);
   doc.text(st, M, ly+1); ly += st.length * LH(8.2) + 2;
   let ry = y + 8; const cx = M + colW + 8;
-  L.can.forEach(c=>{
+  L(Lv.can).forEach(c=>{
     fill(C.or); doc.rect(cx, ry-2.6, 2.4, 2.4, "F");
     color(C.bk); F(false); doc.setFontSize(9.8);
     const t = doc.splitTextToSize(c, colW - 6); doc.text(t, cx+5, ry); ry += t.length * LH(9.8) + 3;
   });
   y = Math.max(ly, ry) + 6;
 
-  // Keyingi maqsad (agar eng yuqori daraja bo‘lmasa)
   if (R.lvl < S.levels.length - 1){
     const NX = S.levels[R.lvl + 1];
     stroke(C.g2); doc.setLineWidth(0.3); doc.rect(M, y, CW, 22, "S");
-    color(C.g6); F(true); doc.setFontSize(8.5); doc.text("KEYINGI MAQSAD", M+7, y+7.5);
-    color(C.bk); F(true); doc.setFontSize(12.5); doc.text(NX.code + " · " + (isEn ? NX.group : NX.group), M+7, y+14);
+    color(C.g6); F(true); doc.setFontSize(8.5); doc.text(P.goal, M+7, y+7.5);
+    color(C.bk); F(true); doc.setFontSize(12.5); doc.text(NX.code + " · " + grpShort(S, NX), M+7, y+14);
     color(C.g6); F(false); doc.setFontSize(9.2);
-    const nt = doc.splitTextToSize("Bu darajada siz: " + NX.can[0].charAt(0).toLowerCase() + NX.can[0].slice(1) + ".", CW - 70);
-    doc.text(nt.slice(0,2), M+62, y+9.5);
+    const c0 = L(NX.can)[0];
+    doc.text(doc.splitTextToSize(P.goalP + c0.charAt(0).toLowerCase() + c0.slice(1) + ".", CW - 70).slice(0,2), M+62, y+9.5);
     y += 22 + 5;
   }
 
-  // Keyingi qadam
   fill(C.or50); doc.rect(M, y, CW, 27, "F"); fill(C.or); doc.rect(M, y, 1.6, 27, "F");
-  color(C.bk); F(true); doc.setFontSize(12); doc.text(isEn ? "Keyingi qadam: bepul speaking tekshiruvi" : "Keyingi qadam: bepul sinov darsi", M+7, y+8.5);
+  color(C.bk); F(true); doc.setFontSize(12); doc.text(isEn ? T("nextEn") : T("nextMath"), M+7, y+8.5);
   F(false); doc.setFontSize(9.5);
-  doc.text(doc.splitTextToSize((isEn ? "Test gapirish va yozishni o‘lchamaydi. " : "") + "O‘qituvchimiz bilan qisqa suhbatda darajangizni tasdiqlab, mos guruh jadvali va narxini aytamiz.", CW-14), M+7, y+14.5);
+  doc.text(doc.splitTextToSize((isEn ? P.noteEn : "") + P.nextBody, CW-14), M+7, y+14.5);
   y += 27 + 6;
 
-  // Ogohlantirish
   color(C.g6); F(false); doc.setFontSize(8.4);
-  doc.text(doc.splitTextToSize("Natija taxminiy va rasmiy sertifikat emas. U test javoblaringiz asosida hisoblandi (" + (isEn ? "grammatika, lug‘at, o‘qib tushunish" : "arifmetika, algebra, geometriya, mantiq") + "). Aniq darajani o‘qituvchi bilan suhbatda tasdiqlaymiz.", CW), M, y);
+  doc.text(doc.splitTextToSize(P.discA + (isEn ? P.areasEn : P.areasMath) + P.discB, CW), M, y);
 
-  // Pastki kontakt qatori
   const fy = 273;
   fill(C.g1); doc.rect(M, fy, CW, 13, "F"); fill(C.or); doc.rect(M, fy, CW, 0.8, "F");
-  color(C.bk); F(true); doc.setFontSize(9.5); doc.text("Bog‘lanish:", M+6, fy+8.4);
+  color(C.bk); F(true); doc.setFontSize(9.5); doc.text(P.contact, M+6, fy+8.4);
   F(true); color(C.or700);
   const tg = CONFIG.telegram.replace(/^@/,""), tel = CONFIG.phone.replace(/[^\d+]/g,"");
-  doc.textWithLink("Telegram: " + CONFIG.telegram, M+28, fy+8.4, { url:"https://t.me/" + tg });
-  doc.textWithLink("Tel: " + CONFIG.phone, M+92, fy+8.4, { url:"tel:" + tel });
+  const tx = M + 6 + doc.getTextWidth(P.contact) + 5, tgText = "Telegram: " + CONFIG.telegram;
+  doc.textWithLink(tgText, tx, fy+8.4, { url:"https://t.me/" + tg });
+  doc.textWithLink(T("tel") + ": " + CONFIG.phone, tx + doc.getTextWidth(tgText) + 10, fy+8.4, { url:"tel:" + tel });
   color(C.g6); doc.setFontSize(8); F(false);
-  doc.text("Registon o‘quv markazi", M, 292);
+  doc.text(P.center, M, 292);
   const site = /^https?:/.test(location.protocol) ? (location.host + location.pathname).replace(/index\.html$/,"").replace(/\/$/,"") : "";
   if (site) doc.textWithLink(site, W-M, 292, { url: location.origin + location.pathname, align:"right" });
-  doc.setProperties({ title: S.title + " daraja testi — " + state.lead.name, author: "Registon o‘quv markazi" });
+  doc.setProperties({ title: title + " — " + state.lead.name, author: P.center });
   return doc;
 }
 async function downloadPDF(){
   if (!state.result || !state.lead) return;
   const btn = $("#pdfBtn"); btn.disabled = true;
   try{
-    const doc = buildPDF();
-    doc.save(("Registon_" + SUBJECTS[state.subj].title + "_" + state.lead.name).replace(/[^\p{L}\p{N}]+/gu,"_") + ".pdf");
-    toast("PDF yuklab olindi");
-  }catch(err){ console.error(err); toast("PDF yaratib bo‘lmadi. Qayta urinib ko‘ring."); }
+    let fonts = null;
+    try { fonts = await loadPdfFonts(); } catch(e){ console.warn("Shrift yuklanmadi:", e); if (LANG === "ru") throw e; }
+    const doc = buildPDF(fonts);
+    doc.save(("Registon_" + L(SUBJECTS[state.subj].title) + "_" + state.lead.name).replace(/[^\p{L}\p{N}]+/gu,"_") + ".pdf");
+    toast(T("pdfOk"));
+  }catch(err){ console.error(err); toast(T("pdfErr")); }
   btn.disabled = false;
 }
 $("#pdfBtn").onclick = downloadPDF;
 
-/* ---------- Bosh sahifa / havola orqali kirish ---------- */
-function goHome(){ clearInterval(state.timer); window.__leaveOk=false; setHash(""); $("#crumb").textContent = "Bepul daraja testi"; state.subj = null; renderCards(); show("home"); }
-renderCards();
+/* =====================================================================
+   11) ISHGA TUSHIRISH
+   ===================================================================== */
+function goHome(){ clearInterval(state.timer); window.__leaveOk=false; setHash(""); state.subj = null; $("#crumb").textContent = T("crumb"); renderCards(); show("home"); }
+$("#brand").onclick = goHome;
+setTimeout(()=>$("#brand").classList.remove("intro"), 1400);
+applyLang();
 let h = ""; try { h = location.hash.slice(1); } catch(e){}
-if (SUBJECTS[h]) startTest(h);   // sayt.uz/#english yoki #math
+if (SUBJECTS[h]) startTest(h);   // sayt/#english yoki #math
 </script>
 </body>
 </html>
